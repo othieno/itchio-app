@@ -1,4 +1,4 @@
-include($$TESTDIR/test.pri)
+include(../test.pri)
 
 HEADERS += \
     testsuite.h \

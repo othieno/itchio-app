@@ -16,20 +16,15 @@ class Authenticator Q_DECL_FINAL : public AbstractController
     friend class Application;
 public:
     void authenticate(const QString& username, const QString& password);
+    void authenticate(const QString& key);
 private:
     explicit Authenticator(Application& application);
 
     void showUserAuthentication();
-    void authenticate(const QString& key);
 
     NetworkManager& networkManager_;
-    Window& window_;
     QString currentUsername_;
-public slots:
-    void onUserDisconnected();
 private slots:
-    void onAuthenticated(const User& user);
-    void onAuthenticationFailed(const QString& errorMessage);
     void onReceivedUserAuthentication(const QNetworkReply::NetworkError& error, const QByteArray& response);
 signals:
     void authenticated(const User& user);

@@ -2,6 +2,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QStandardPaths>
+#include <QDir>
 
 using itchio::Application;
 using itchio::Settings;
@@ -15,7 +16,7 @@ using itchio::ContentManager;
  */
 Application::Application(int& argc, char** argv) :
 QApplication(argc, argv),
-settings_(settingsFileLocation(), QSettings::IniFormat),
+settings_(QString("%1/%2.ini").arg(dataLocation(), applicationName()), QSettings::IniFormat),
 window_(*this),
 networkManager_(*this),
 authenticator_(*this),
@@ -23,14 +24,14 @@ contentManager_(*this)
 {
     connect(&networkManager_, &NetworkManager::initialized, this, &Application::onNetworkManagerInitialized);
     connect(&authenticator_, &Authenticator::authenticated, this, &Application::onUserAuthenticated);
-//    connect(&contentManager_, &ContentManager::userSessionClosed, this, &Application::onUserSessionClosed);
+//TODO    connect(&contentManager_, &ContentManager::userSessionClosed, this, &Application::onUserSessionClosed);
 
-    setApplicationStyleSheet();
+    setApplicationStyle();
 
     networkManager_.initialize();
 }
 /*!
- * \brief Returns a reference to the application's settings.
+ * \brief Returns the application's settings.
  */
 Settings& Application::settings()
 {
@@ -44,7 +45,7 @@ const Settings& Application::settings() const
     return settings_;
 }
 /*!
- * \brief Returns a reference to the application's main window.
+ * \brief Returns the application's main window.
  */
 Window& Application::window()
 {
@@ -58,7 +59,7 @@ const Window& Application::window() const
     return window_;
 }
 /*!
- * \brief Returns a reference to the application's network manager.
+ * \brief Returns the application's network manager.
  */
 NetworkManager& Application::networkManager()
 {
@@ -72,7 +73,7 @@ const NetworkManager& Application::networkManager() const
     return networkManager_;
 }
 /*!
- * \brief Returns a reference to the application's authentication service.
+ * \brief Returns the application's authentication service.
  */
 Authenticator& Application::authenticator()
 {
@@ -86,7 +87,7 @@ const Authenticator& Application::authenticator() const
     return authenticator_;
 }
 /*!
- * \brief Returns a reference to the application's content manager.
+ * \brief Returns the application's content manager.
  */
 ContentManager& Application::contentManager()
 {
@@ -102,15 +103,12 @@ const ContentManager& Application::contentManager() const
 /*!
  * \brief Returns the path to the directory where the application stores persistent data.
  */
-QString Application::dataLocation() const
+QString Application::dataLocation()
 {
-    // If the application has not been identified yet, do so.
-    if (organizationName().isEmpty())
-    {
-        setOrganizationDomain("itch.io");
-        setOrganizationName("itch.io");
-        setApplicationName("itchio");
-    }
+    //TODO Replace this statement with the commented block below.
+    return QString("itch.user");
+
+/*
 //TODO This is a temporary fix to support systems that don't have Qt 5.4 yet (e.g. Debian GNU/Linux as of Jan 5, 2015).
 //TODO It should be removed when Qt 5.4 is readily available (e.g. via a package manager).
 #if QT_VERSION >= 0x050400
@@ -118,22 +116,28 @@ QString Application::dataLocation() const
 #else
     return QStandardPaths::writableLocation(QStandardPaths::DataLocation);
 #endif
+*/
 }
 /*!
- * \brief Returns the path to the application's configuration file.
+ * \brief Creates a data location directory and returns true if successful, false otherwise.
+ * If the directory already exists, then true is returned.
  */
-QString Application::settingsFileLocation() const
+bool Application::createDataLocation()
 {
-    // Note: dataLocation() must be evaluated before a call to applicationName()
-    // or else the wrong application name is returned. This means that following
-    // statements cannot be grouped into one.
-    const auto& baseDir = dataLocation();
-    return QString("%1/%2.ini").arg(".", applicationName()); // TODO Replace "." with baseDir when done debugging.
+    const QDir directory(dataLocation());
+    return directory.exists() || directory.mkpath(".");
 }
 /*!
- * \brief Sets the application's default style.
+ * \brief Restarts the application.
  */
-void Application::setApplicationStyleSheet()
+void Application::restart()
+{
+    exit(Application::RESTART_ON_EXIT_CODE);
+}
+/*!
+ * \brief Sets the application's style which includes stylesheets and fonts.
+ */
+void Application::setApplicationStyle()
 {
     QFile file(":/qss/itchio.qss");
     if (file.open(QIODevice::ReadOnly))
@@ -156,6 +160,12 @@ void Application::onNetworkManagerInitialized()
  */
 void Application::onUserAuthenticated(const User& user)
 {
+    if (settings_.autoLogin())
+    {
+        settings_.setApiKey(user.key);
+        settings_.setUsername(user.username);
+    }
+
     contentManager_.showUserContent(user);
 }
 /*!
@@ -164,11 +174,4 @@ void Application::onUserAuthenticated(const User& user)
 void Application::onUserSessionClosed()
 {
     authenticator_.showUserAuthentication();
-}
-/*!
- * \brief Restarts the application.
- */
-void Application::onRestart()
-{
-    exit(Application::RESTART_ON_EXIT_CODE);
 }

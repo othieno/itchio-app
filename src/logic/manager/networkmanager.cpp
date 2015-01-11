@@ -7,9 +7,9 @@ using itchio::NetworkManager;
  * \brief Instantiates an NetworkManager that is attached to a parent \a application.
  */
 NetworkManager::NetworkManager(Application& application) :
-AbstractManager(application),
+Manager(application),
 apiServerStatus_(ApiServerStatus::Down),
-isUserAuthenticationRequestPending_(false)
+operationMode_(OperationMode::Offline)
 {
     connect
     (
@@ -26,39 +26,38 @@ void NetworkManager::initialize()
     const bool accessible = networkAccessManager_.networkAccessible() == QNetworkAccessManager::Accessible;
     if (accessible)
     {
+        // TODO Block signals during the initialization phase?
+//        setOperationMode(OperationMode::Online);
+
         //TODO Just network initialization things.
     }
     emit initialized();
 }
 /*!
- * \brief Returns true if the network manager is operating in offline mode, false otherwise.
+ * \brief Returns the API server's status.
+ */
+const NetworkManager::ApiServerStatus& NetworkManager::apiServerStatus() const
+{
+    return apiServerStatus_;
+}
+/*!
+ * \brief Returns the network manager's operation mode.
  * The network manager is considered to be in offline mode if the network is not accessible,
  * or the API server is down.
  */
-bool NetworkManager::offline() const
+const NetworkManager::OperationMode& NetworkManager::operationMode() const
 {
-    return
-    networkAccessManager_.networkAccessible() != QNetworkAccessManager::Accessible ||
-    apiServerStatus_ == ApiServerStatus::Down;
+    return operationMode_;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*!
+ * \brief Makes a request to authorize the specified \a username and \a password.
+ */
 void NetworkManager::requestUserAuthentication(const QString& username, const QString& password)
 {
-    if (!isUserAuthenticationRequestPending_ && !offline())
+    // This variable makes sure requests are coalesced to prevent flooding the server.
+    static bool IS_REQUEST_PENDING = false;
+
+    if (!IS_REQUEST_PENDING)//TODO && operationMode_ != OperationMode::Offline)
     {
         const auto& request = createApiRequest("/login");
 
@@ -69,7 +68,7 @@ void NetworkManager::requestUserAuthentication(const QString& username, const QS
         if (reply != nullptr)
         {
             // Coalesce authentication requests to prevent flooding the server.
-            isUserAuthenticationRequestPending_ = true;
+            IS_REQUEST_PENDING = true;
 
             connect(reply, &QNetworkReply::finished, [this, reply]
             {
@@ -80,47 +79,91 @@ void NetworkManager::requestUserAuthentication(const QString& username, const QS
                 emit receivedUserAuthentication(error, response);
                 reply->deleteLater();
 
-                isUserAuthenticationRequestPending_ = false;
+                IS_REQUEST_PENDING = false;
             });
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*!
+ * \brief Makes a request to acquire the profile of the user with the specified \a key.
+ */
+void NetworkManager::requestUserProfile(const QString&)
+{
+    //TODO Implement me.
+}
+/*!
+ * \brief Makes a request to acquire the set of games owned by the user with the specified \a key.
+ */
+void NetworkManager::requestUserGames(const QString&)
+{
+    //TODO Implement me.
+}
+/*!
+ * TODO Document this.
+ */
+void NetworkManager::requestGamePurchases(const QString&, const unsigned int)
+{
+    //TODO Implement me.
+}
+/*!
+ * TODO Document this.
+ */
+void NetworkManager::requestGameDownloadKeys(const QString&, const unsigned int)
+{
+    //TODO Implement me.
+}
+/*!
+ * TODO Document this.
+ */
+void NetworkManager::requestApiServerStatus()
+{
+    //TODO Implement me.
+}
+/*!
+ * TODO Document this.
+ */
+void NetworkManager::requestApiEncryptionKey()
+{
+    //TODO Implement me.
+}
+/*!
+ * TODO Document this.
+ */
+void NetworkManager::setApiServerStatus(const ApiServerStatus&)
+{
+    //TODO Implement me.
+}
+/*!
+ * TODO Document this.
+ */
+void NetworkManager::setOperationMode(const OperationMode&)
+{
+    //TODO Implement me.
+}
 /*!
  * \brief Handles the 'QNetworkAccessManager::networkAccessibleChanged' signal.
  */
 void NetworkManager::onNetworkAccessibleChanged()
 {
     //TODO Complete me.
-    const bool offline = networkAccessManager_.networkAccessible() != QNetworkAccessManager::Accessible;
-    Q_UNUSED(offline);
+    const bool accessible = networkAccessManager_.networkAccessible() == QNetworkAccessManager::Accessible;
+    Q_UNUSED(accessible);
+//    if (!accessible)
+//        setOperationMode(OperationMode::Offline);
 
 
 
-    //TODO Start a timer to attempt to reconnect after a specified interval.
+
+    //TODO Start a timer to attempt to reconnect after every few milliseconds.
 }
-
-
-
 /*!
  * \brief Returns a correctly formed API request with the given \a path.
  */
 QNetworkRequest NetworkManager::createApiRequest(const QString& path)
 {
+    constexpr const char* const CONTENT_TYPE = "application/x-www-form-urlencoded";
+    constexpr const char* const USER_AGENT = "itch.io app 0.0"; //TODO Move this to the application class? And maybe use the VERSION macro in the .pro file.
+
     const QString& simplifiedPath = path.simplified();
     const QString& format = simplifiedPath.at(0) == '/' ? "%1%2" : "%1/%2";
 

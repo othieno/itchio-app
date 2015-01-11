@@ -7,19 +7,17 @@ TARGET = itchio
 INCLUDEPATH += \
     . \
     logic \
+    logic/domain \
+    logic/manager \
+    persistence/dao \
     presentation \
     presentation/controllers \
-    logic/domain \
-    presentation/views \
-    logic/manager \
-    persistence/dao
+    presentation/views
 
 HEADERS += \
     logic/application.h \
     logic/authenticator.h \
     logic/settings.h \
-    persistence/databasemanager.h \
-    presentation/window.h \
     logic/domain/game.h \
     logic/domain/library.h \
     logic/domain/price.h \
@@ -27,23 +25,16 @@ HEADERS += \
     logic/domain/user.h \
     logic/manager/contentmanager.h \
     logic/manager/networkmanager.h \
+    logic/manager/manager.h \
+    persistence/databasemanager.h \
     persistence/dao/abstractdao.h \
     persistence/dao/gamedao.h \
+    presentation/window.h \
     presentation/controllers/abstractcontroller.h \
-    presentation/views/abstractview.h \
+    presentation/views/view.h \
     presentation/views/libraryview.h \
-    presentation/views/loginprompt.h \
-    presentation/modaldialog.h \
-    logic/manager/abstractmanager.h
-
-FORMS += \
-    presentation/forms/appwindow.ui \
-    presentation/forms/librarywidget.ui \
-    presentation/forms/loginwidget.ui \
-    presentation/forms/modalwindow.ui \
-    presentation/forms/secondarywindow.ui \
-    presentation/forms/settingswidget.ui \
-    presentation/forms/window.ui
+    presentation/views/loginpromptview.h \
+    presentation/modalwindow.h
 
 SOURCES += \
     itchio.cpp \
@@ -61,8 +52,20 @@ SOURCES += \
     persistence/dao/gamedao.cpp \
     presentation/controllers/abstractcontroller.cpp \
     presentation/views/libraryview.cpp \
-    presentation/views/loginprompt.cpp \
-    presentation/modaldialog.cpp \
-    logic/manager/abstractmanager.cpp
+    presentation/views/loginpromptview.cpp \
+    presentation/views/view.cpp \
+    presentation/modalwindow.cpp \
+    logic/manager/manager.cpp
+
+FORMS += \
+    presentation/forms/appwindow.ui \
+    presentation/forms/librarywidget.ui \
+    presentation/forms/loginwidget.ui \
+    presentation/forms/modalwindow.ui \
+    presentation/forms/secondarywindow.ui \
+    presentation/forms/settingswidget.ui \
+    presentation/forms/loginprompt.ui \
+    presentation/forms/content.ui \
+    presentation/forms/window.ui
 
 include(src.pri)

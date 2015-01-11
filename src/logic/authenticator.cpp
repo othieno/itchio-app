@@ -1,6 +1,6 @@
 #include "authenticator.h"
-#include "loginprompt.h"
 #include "application.h"
+#include "modalwindow.h"
 #include "user.h"
 #include "networkmanager.h"
 #include <QJsonDocument>
@@ -11,27 +11,32 @@ using itchio::Authenticator;
 
 Authenticator::Authenticator(Application& application) :
 AbstractController(application),
-networkManager_(application.networkManager()),
-window_(application.window())
+networkManager_(application.networkManager())
 {
-    connect
-    (
-        &networkManager_, &NetworkManager::receivedUserAuthentication,
-        this, &Authenticator::onReceivedUserAuthentication
-    );
-
-
-    connect(this, &Authenticator::authenticated,        &window_.modalDialog(), &ModalDialog::hide);
-    connect(this, &Authenticator::authenticated,        this, &Authenticator::onAuthenticated);
-    connect(this, &Authenticator::authenticationFailed, this, &Authenticator::onAuthenticationFailed);
+    connect(&networkManager_, &NetworkManager::receivedUserAuthentication, this, &Authenticator::onReceivedUserAuthentication);
 }
-
-
-
-
+/*!
+ * \brief Displays the authentication screen.
+ */
 void Authenticator::showUserAuthentication()
 {
-    onUserDisconnected();
+    auto& window = application_.window();
+
+    // If the modal window was rejected, then the user explicitly closed the authentication window.
+    // The application is exited as a consequence.
+    if (window.openModalWindow(View::Identifier::LoginPrompt, Qt::ApplicationModal) == QDialog::Rejected)
+        exit(0);
+
+
+
+
+
+
+
+
+
+
+
 /*
     // A login prompt is created only if we have no API key, or a key that cannot be authenticated.
     const auto& settings = application_.settings();
@@ -49,54 +54,17 @@ void Authenticator::showUserAuthentication()
 void Authenticator::authenticate(const QString& username, const QString& password)
 {
     currentUsername_ = username;
-    networkManager_.requestUserAuthentication(username, password);
 
     // Upon completion, the NetworkManager emits a 'receivedUserAuthentication'
     // signal which is handled by the 'onReceivedUserAuthentication' slot.
+    networkManager_.requestUserAuthentication(username, password);
 }
 
 
-
-
-
-
-
-
-
-void Authenticator::onUserDisconnected()
+void Authenticator::authenticate(const QString&)
 {
-    // When a user disconnects but the application is still running, create a login prompt.
-    window_.hide();
-    window_.modalDialog().hide();
-
-    LoginPrompt* const prompt = new LoginPrompt(*this, window_.modalDialog());
-    if (prompt != nullptr)
-        connect(this, &Authenticator::authenticated, prompt, &LoginPrompt::deleteLater);
-
-    window_.modalDialog().show();
+    //TODO Implement me.
 }
-
-
-
-
-#ifndef FIXME
-
-
-void Authenticator::onAuthenticated(const User& user)
-{
-    auto& settings = application_.settings();
-    if (settings.autoLogin())
-    {
-        settings.setApiKey(user.key);
-        settings.setUsername(user.username);
-    }
-}
-
-void Authenticator::onAuthenticationFailed(const QString& message)
-{
-    qWarning() << "[Authenticator::onAuthenticationFailed]" << message;
-}
-
 
 
 
@@ -115,7 +83,7 @@ void Authenticator::onReceivedUserAuthentication(const QNetworkReply::NetworkErr
 
         const auto& json = QJsonDocument::fromJson(response).object();
 
-        // If we managed to connect, but a server-side error occured, emit the loginFailed
+        // If we managed to connect, but a server-side error occured, emit the authenticationFailed
         // signal with the corresponding error message.
         const auto& jsonError = json[KEY_ERROR];
         if (!jsonError.isUndefined())
@@ -163,4 +131,3 @@ void Authenticator::onReceivedUserAuthentication(const QNetworkReply::NetworkErr
     }
 #endif
 }
-#endif

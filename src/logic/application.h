@@ -31,13 +31,14 @@ public:
     ContentManager& contentManager();
     const ContentManager& contentManager() const;
 
-    QString dataLocation() const;
+    static QString dataLocation();
+    static bool createDataLocation();
 
     constexpr static unsigned int RESTART_ON_EXIT_CODE = 0x49544348; // 0x49544348 = 'ITCH' (ASCII 8).
+public slots:
+    void restart();
 private:
-    QString settingsFileLocation() const;
-
-    void setApplicationStyleSheet();
+    void setApplicationStyle();
 
     Settings settings_;
 
@@ -50,7 +51,6 @@ private slots:
     void onNetworkManagerInitialized();
     void onUserAuthenticated(const User& user);
     void onUserSessionClosed();
-    void onRestart();
 };
 
 } // namespace itchio

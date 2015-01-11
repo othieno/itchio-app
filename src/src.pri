@@ -1,18 +1,22 @@
 # This include file must be appended to src.pro, and NOT prepended.
 
 # Add the necessary modules.
-QT *= core gui network
+QT += core gui network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-# Resource files.
-RESOURCES += $$BASEDIR/res/resources.qrc
+#
+SRCDIR       = $$PWD
+BASEDIR      = $$SRCDIR/..
 
 # Change the locations of the built files.
-DESTDIR      = .
+DESTDIR      = $$BASEDIR/build
 OBJECTS_DIR  = $$DESTDIR/obj
 MOC_DIR      = $$DESTDIR/moc
 RCC_DIR      = $$DESTDIR/rcc
 UI_DIR       = $$DESTDIR/ui
+
+# Resource files.
+RESOURCES   += $$BASEDIR/res/resources.qrc
 
 # Find the OpenSSL package.
 CONFIG += link_pkgconfig
@@ -25,4 +29,4 @@ CONFIG += debug
 CONFIG += c++11
 
 # Add compiler flags for extra error checking.
-QMAKE_CXXFLAGS += -Wall -Wextra -Werror -Wundef -Woverloaded-virtual #-Wshadow
+QMAKE_CXXFLAGS += -Wall -Wextra #-Werror -Wundef -Woverloaded-virtual #-Wshadow

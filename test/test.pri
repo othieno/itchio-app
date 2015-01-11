@@ -1,8 +1,8 @@
 # This include file must be prepended to unit.pro and benchmark.pro, and NOT appended.
 
 # Include the project file to get the current source code tree configuration.
-!include($$SRCPRO) {
-    error(Could not locate the source project file \'$$SRCPRO\'.)
+!include(../src/src.pro) {
+    error(Could not locate the source project file.)
 }
 
 # Prefix the include path directories.
@@ -20,8 +20,7 @@ for(header, headers) {
     HEADERS += $$SRCDIR/$$header
 }
 
-# Remove itchio.cpp because it creates an entry point conflict (two main functions),
-# then prefix the source files.
+# Remove itchio.cpp since it creates an entry point conflict (two main functions), then prefix the source files.
 SOURCES -= itchio.cpp
 sources  = $$SOURCES
 SOURCES  =
@@ -29,7 +28,7 @@ for(source, sources) {
     SOURCES += $$SRCDIR/$$source
 }
 
-# Remove files that are not pertinent to the testing/benchmarking phase.
+# Remove files that are not pertinent to the testing process.
 FORMS =
 RESOURCES =
 

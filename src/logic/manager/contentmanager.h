@@ -1,13 +1,13 @@
 #ifndef CONTENTMANAGER_H
 #define CONTENTMANAGER_H
 
-#include "abstractmanager.h"
+#include "manager.h"
 #include "user.h"
 #include <QTimer>
 
 namespace itchio {
 
-class ContentManager Q_DECL_FINAL : public AbstractManager
+class ContentManager Q_DECL_FINAL : public Manager
 {
     Q_OBJECT
 
@@ -15,6 +15,16 @@ public:
     explicit ContentManager(Application& application);
 
     void showUserContent(const User& user);
+    void updateUserContent(const QString& key);
+
+
+
+
+    void downloadContent(const QString& key);
+
+
+    void deleteDatabase();
+    void deleteCache();
 
 public slots:
     void onUserDisconnected();
@@ -24,8 +34,8 @@ private:
     QString cacheDataLocation() const;
 
 
-    void createUserSession();
-    void closeUserSession();
+    void createSession();
+    void closeSession();
 
     User currentUser_;
 

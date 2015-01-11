@@ -10,7 +10,7 @@ static constexpr const int DEFAULT_UPDATE_INTERVAL = 60 * 1000; // 1 minute
 using itchio::ContentManager;
 
 ContentManager::ContentManager(Application& application) :
-AbstractManager(application)
+Manager(application)
 {}
 
 void ContentManager::showUserContent(const User& user)
