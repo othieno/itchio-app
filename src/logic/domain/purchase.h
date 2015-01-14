@@ -16,7 +16,7 @@ public:
     QString      email;
     QString      source;
 
-    QDateTime    creationDate;
+    QDateTime    when;
 
     bool         donation;
     Price        price;

@@ -3,75 +3,47 @@
 
 #include "manager.h"
 #include "user.h"
+#include "database.h"
 #include <QTimer>
 
 namespace itchio {
 
+class GameDAO;
+
 class ContentManager Q_DECL_FINAL : public Manager
 {
     Q_OBJECT
-
 public:
     explicit ContentManager(Application& application);
 
-    void showUserContent(const User& user);
-    void updateUserContent(const QString& key);
+    const User& user() const;
+    void setUser(const User& user);
 
+    bool isAutoUpdateEnabled() const;
+    void enableAutoUpdate(const bool enable = true);
 
+    int autoUpdateInterval() const;
+    void setAutoUpdateInterval(const int milliseconds);
 
+    GameDAO& gameDAO();
 
-    void downloadContent(const QString& key);
+    static QString cacheLocation();
 
-
-    void deleteDatabase();
-    void deleteCache();
-
+    constexpr static int MINIMUM_AUTO_UPDATE_INTERVAL = 3  * 1000; // 3 seconds.
+    constexpr static int DEFAULT_AUTO_UPDATE_INTERVAL = 60 * 1000; // 1 minute
 public slots:
-    void onUserDisconnected();
+    void updateUserContent();
+    void emptyCache();
 
 private:
-    QString databaseLocation() const;
-    QString cacheDataLocation() const;
-
-
-    void createSession();
-    void closeSession();
-
-    User currentUser_;
-
-signals:
-    void sessionCreated(const User& user);
-    void sessionClosed();
-};
-
-/*
-class Window;
-using Library = int;
-
-class Curator Q_DECL_FINAL : public QObject
-{
-    Q_OBJECT
-    friend class Application;
-public:
-    inline const Library& library() const { return library_; }
-
-    inline int autoUpdateInterval() const { return autoUpdateTimer_.interval(); }
-    inline void setAutoUpdateInterval(const int milliseconds){ autoUpdateTimer_.setInterval(milliseconds); }
-public slots:
-    void refresh();
-private:
-    explicit Curator(Application& application);
-
-    Window& window_;
-    User user_;
-    Library library_;
     QTimer autoUpdateTimer_;
+    User user_;
+
+    Database userDatabase_;
 signals:
-    void disconnected();
-    void refreshed();
-    void libraryUpdated();
+    void userContentUpdated();
+    void cacheEmptied();
 };
-*/
 
 } // namespace itchio
 

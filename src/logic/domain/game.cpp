@@ -6,6 +6,7 @@
 
 using itchio::Game;
 
+//TODO Move to header file.
 static constexpr const unsigned int MAX_TITLE_LENGTH = 128;
 static constexpr const unsigned int MAX_AUTHOR_LENGTH = 128;
 static constexpr const unsigned int MAX_DESCRIPTION_LENGTH = 128;

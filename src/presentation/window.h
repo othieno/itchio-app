@@ -22,6 +22,8 @@ public:
 private:
     explicit Window(Application& application);
 
+    void showEvent(QShowEvent* const event) Q_DECL_OVERRIDE;
+
     Application& application_;
 };
 

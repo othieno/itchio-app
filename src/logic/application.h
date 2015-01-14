@@ -4,6 +4,7 @@
 #include <QApplication>
 #include "settings.h"
 #include "window.h"
+#include "databasemanager.h"
 #include "networkmanager.h"
 #include "authenticator.h"
 #include "contentmanager.h"
@@ -22,6 +23,9 @@ public:
     Window& window();
     const Window& window() const;
 
+    DatabaseManager& databaseManager();
+    const DatabaseManager& databaseManager() const;
+
     NetworkManager& networkManager();
     const NetworkManager& networkManager() const;
 
@@ -32,7 +36,7 @@ public:
     const ContentManager& contentManager() const;
 
     static QString dataLocation();
-    static bool createDataLocation();
+    static bool createDataDirectories();
 
     constexpr static unsigned int RESTART_ON_EXIT_CODE = 0x49544348; // 0x49544348 = 'ITCH' (ASCII 8).
 public slots:
@@ -44,6 +48,7 @@ private:
 
     Window window_;
 
+    DatabaseManager databaseManager_;
     NetworkManager networkManager_;
     Authenticator authenticator_;
     ContentManager contentManager_;

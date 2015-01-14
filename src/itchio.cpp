@@ -12,8 +12,8 @@ int main(int argc, char** argv)
     do
     {
         // Make sure we have access to a directory where application data can be stored.
-        if (!itchio::Application::createDataLocation())
-            qFatal("FATAL: Could not create a writable application data directory.");
+        if (!itchio::Application::createDataDirectories())
+            qFatal("FATAL: Could not create the application's data directories.");
 
         status = itchio::Application(argc, argv).exec();
     } while (status == itchio::Application::RESTART_ON_EXIT_CODE);

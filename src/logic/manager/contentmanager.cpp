@@ -1,60 +1,114 @@
 #include "contentmanager.h"
+#include "databasemanager.h"
+#include "networkmanager.h"
 #include "application.h"
 #include "window.h"
-//#include "views/libraryview.h"
-//#include <QDesktopWidget>
-#include <QDebug> //TODO Remove me.
-
-static constexpr const int DEFAULT_UPDATE_INTERVAL = 60 * 1000; // 1 minute
+#include "gamedao.h"
+#include <QDir>
 
 using itchio::ContentManager;
+using itchio::GameDAO;
+using itchio::User;
 
+/*!
+ * \brief Instantiates a ContentManager that is attached to the specified \a application.
+ */
 ContentManager::ContentManager(Application& application) :
 Manager(application)
-{}
-
-void ContentManager::showUserContent(const User& user)
 {
-/*
-    closeUserSession();
+    connect(&autoUpdateTimer_, &QTimer::timeout, this, &ContentManager::updateUserContent);
 
-    currentUser_ = user;
-    createUserSession();
-*/
-    currentUser_ = user;
-    qDebug() << "Loading content for user: " << currentUser_.username;
-}
-
-void ContentManager::onUserDisconnected()
-{
-    qDebug() << "Disconnecting user: " << currentUser_.username;
-}
-
-
-#ifdef DEPRECATED
-using itchio::Curator;
-
-Curator::Curator(Application& application) :
-AbstractController(application),
-window_(application.window())
-{
-    connect(&autoUpdateTimer_, &QTimer::timeout, this, &Curator::refresh);
-
-    autoUpdateTimer_.setInterval(DEFAULT_UPDATE_INTERVAL);
+    autoUpdateTimer_.setInterval(DEFAULT_AUTO_UPDATE_INTERVAL);
     autoUpdateTimer_.setSingleShot(true);
 }
-
-void Curator::onUserAuthenticated(const User& user)
+/*!
+ * \brief Returns the current user.
+ */
+const User& ContentManager::user() const
+{
+    return user_;
+}
+/*!
+ * Sets the current \a user.
+ */
+void ContentManager::setUser(const User& user)
 {
     user_ = user;
-    refresh();
 
-//    libraryController_.setUser(user);
-//    libraryController_.onCreateView();
+    // Close the previous user's database.
+    if (userDatabase_.open())
+        userDatabase_.close();
+
+    // Create the new user's database.
+    userDatabase_ = DatabaseManager::createDatabase(QString("%1.sqlite").arg(user_.identifier));
+    if (!userDatabase_.open())
+    {
+        userDatabase_ = DatabaseManager::createInMemoryDatabase();
+        if (!userDatabase_.open())
+            qFatal("[ContentManager] FATAL: Could not open user database.");
+    }
+
+    // Update the user's content.
+    updateUserContent();
 }
-
-void Curator::refresh()
+/*!
+ * \brief Returns true if content auto-updates are enabled, false otherwise.
+ */
+bool ContentManager::isAutoUpdateEnabled() const
 {
+    return autoUpdateTimer_.isActive();
+}
+/*!
+ * \brief Enables content auto-updates if \a enable is set to true, disables it otherwise.
+ * If the network manager is in offline mode, then auto-refresh remains disabled.
+ */
+void ContentManager::enableAutoUpdate(const bool enable)
+{
+    if (enable && application_.networkManager().operationMode() == NetworkManager::OperationMode::Online)
+        autoUpdateTimer_.start();
+    else
+        autoUpdateTimer_.stop();
+}
+/*!
+ * \brief Returns the auto-update interval in milliseconds.
+ */
+int ContentManager::autoUpdateInterval() const
+{
+    return autoUpdateTimer_.interval();
+}
+/*!
+ * \brief Sets the auto-update interval to the specified time in milliseconds.
+ */
+void ContentManager::setAutoUpdateInterval(const int milliseconds)
+{
+    autoUpdateTimer_.setInterval(milliseconds >= MINIMUM_AUTO_UPDATE_INTERVAL ? milliseconds : MINIMUM_AUTO_UPDATE_INTERVAL);
+}
+/*!
+ * \brief Returns the Game data access object.
+ */
+GameDAO& ContentManager::gameDAO()
+{
+    static GameDAO GAMEDAO_INSTANCE(&userDatabase_);
+    return GAMEDAO_INSTANCE;
+}
+/*!
+ * \brief Returns the path to the directory where all cache data is stored.
+ */
+QString ContentManager::cacheLocation()
+{
+    return Application::dataLocation().append("/cache");
+}
+/*!
+ * \brief Updates the current user's stored content.
+ */
+void ContentManager::updateUserContent()
+{
+    //TODO Implement me.
+
+
+
+
+/*
     // If the timer is counting down, then the refresh was requested manually.
     if (autoUpdateTimer_.isActive())
         autoUpdateTimer_.stop();
@@ -69,53 +123,19 @@ void Curator::refresh()
 
 //    if (autoUpdateTimer_.interval() > 0)
 //        autoUpdateTimer_.start();
-}
-
-
-void onCreateView()
-{
-    qDebug("Curator::onCreateView");
-
-/*
-    if (libraryView_ == nullptr) {
-        libraryView_ = new LibraryView(*this);
-    }
-
-
-    application_.appWindow = new AppWindow(&application_);
-
-
-    if (libraryView_ == nullptr) {
-        libraryView_ = new LibraryView(nullptr, &application_);
-    }
-//    window_.setView(libraryView_, true);
-
-
-    auto& window = *application_.appWindow;
-    auto& layout = *window.widgetsLayout;
-
-    window.hide();
-    window.setupSizeGrip();
-    layout.addWidget(libraryView_);
-    window.sizeGrip->show();
-    window.onWidgetChange(libraryView_);
-    window.move(QApplication::desktop()->screen(QApplication::desktop()->screenNumber(&window))->rect().center() - window.rect().center());
-    window.show();
 */
-}
 
-void onDestroyView()
-{
-    qDebug("Curator::onDestroyView");
-/*
-    if (libraryView_ != nullptr) {
-//        window_.removeView(libraryView_);
-        libraryView_->deleteLater();
-    }
-//    if (libraryView_ != nullptr) {
-//        libraryView_->hide();
-//        libraryView_->deleteLater();
-//    }
-*/
+
+
+
+
 }
-#endif
+/*!
+ * \brief Empties the cache directory.
+ */
+void ContentManager::emptyCache()
+{
+    QDir directory(cacheLocation());
+    if (directory.exists() && directory.removeRecursively() && directory.mkpath("."))
+        emit cacheEmptied();
+}

@@ -10,14 +10,32 @@ namespace itchio {
 
 class QJsonObject;
 
-struct CoverImage
+/*
+struct PublishStatistics
 {
-    constexpr static const unsigned int WIDTH  = 315;
-    constexpr static const unsigned int HEIGHT = 250;
-
-    QString filename;
-    QString fileURL;
+    unsigned int   gameIdentifier;
+    Price          earnings;
+    unsigned int   viewCount;
+    unsigned int   purchaseCount;
+    unsigned int   downloadCount;
 };
+struct BuyInfo
+{
+    bool           isPurchased;
+
+    Price          minimumPrice;
+
+    QString        itchURL;
+    QString        googlePlayURL;
+    QString        appleStoreURL;
+};
+*/
+
+/*!
+ * \brief Cover image resolution.
+ */
+constexpr static int COVER_IMAGE_WIDTH  = 315;
+constexpr static int COVER_IMAGE_HEIGHT = 250;
 
 
 struct Game
@@ -27,7 +45,7 @@ struct Game
      */
     enum class Status
     {
-        Canceled,
+        Cancelled,
         OnHold,
         InDevelopment,
         Prototype,
@@ -59,7 +77,7 @@ struct Game
         Public
     };
     /*!
-     *
+     * An enumeration of supported platforms.
      */
     enum class Platform
     {
@@ -71,41 +89,20 @@ struct Game
         Web
     };
 
-    unsigned int   identifier;
-    QString        title;
-    QString        author;
-    QString        tagline;
+    unsigned int     identifier;
+    QString          title;
+    QString          author;
+    QString          coverImageURL;
+    QString          tagline; // a.k.a. shortText.
+    QSet<Genre>      genres;
+    QSet<Platform>   platforms;
+    Status           status;
+    QSet<QString>    tags;
+    Visibility       visibility;
+    QString          type; //TODO Find out exactly what a game 'type' is. Is it a genre?
 
-#ifdef EXPERIMENTAL
-    CoverImage     coverImage;
-    QSet<Genre>    genres;
-    QSet<Platform> platforms;
-    QSet<QString>  tags;
-    Status         status;
-//    QString        type; //TODO Find out what this is.
-    QString        itchURL;
-    QString        googlePlayURL;
-    QString        appleStoreURL;
+    QDateTime        publishDate;
 
-    QDateTime      publishDate;
-    QDateTime      lastUpdated;
-
-//    QDateTime      lastPlayed;
-
-    Price          minimumPrice;
-    bool           purchased;
-
-    bool           downloaded;
-    unsigned int   downloadCount; //TODO Make this a 64-bit value.
-
-
-    // These are author specific.
-    QDateTime      creationDate;
-    Visibility     visibility;
-    Price          earnings;
-    unsigned int   viewCount;
-    unsigned int   purchaseCount;
-#endif
     static Game fromJson(/*const QJsonObject& object*/);
     operator QString() const;
 };

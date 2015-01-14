@@ -1,11 +1,13 @@
 #ifndef ABSTRACTDAO_H
 #define ABSTRACTDAO_H
 
-#include <QHash>
+#include <QList>
+
+class QSqlQuery;
 
 namespace itchio {
 
-class DatabaseManager;
+class Database;
 
 template<class Entry, class Identifier>
 class AbstractDAO
@@ -24,32 +26,38 @@ public:
      */
     virtual QList<Entry> getAll() const = 0;
     /*!
-     * Removes the entry with the specified \a identifier from the database.
+     * Removes the entry with the specified \a identifier (primary key) from the database.
      */
     virtual void remove(const Identifier& identifier) = 0;
-    /*!
-     * Removes the specified \a entry from the database.
-     */
-    virtual void remove(const Entry& entry) = 0;
-
 protected:
     /*!
-     * Instantiates an abstract data access object (DAO) that interfaces with the
-     * specified database \a manager.
+     * Instantiates an abstract data access object that interacts with the specified \a database.
      */
-    explicit AbstractDAO(DatabaseManager& manager) :
-    databaseManager_(manager)
-    {}
+    explicit AbstractDAO(Database* const database) :
+    database_(database)
+    {
+        Q_ASSERT(database_ != nullptr);
+    }
     /*!
-     * A reference to the manager that interfaces with the underlying database.
+     * Creates the database tables used by this data access object.
      */
-    DatabaseManager& databaseManager_;
-
+    virtual void createTables() = 0;
     /*!
-     * A mock database.
-     * TODO Remove this when the database implementation is complete.
+     * Drops all the database tables used by this data access object.
      */
-    QHash<Identifier, Entry> database_;
+    virtual void dropTables() = 0;
+    /*!
+     * Populates the database.
+     */
+    virtual void populateTables() = 0;
+    /*!
+     * Converts the result of an SQL query into the Entry type.
+     */
+    virtual Entry toDomainObject(const QSqlQuery& query) const = 0;
+    /*!
+     * The database to query.
+     */
+    Database* const database_;
 };
 
 } // namespace itchio

@@ -34,3 +34,28 @@ int Window::openModalWindow(const View::Identifier& identifier, const Qt::Window
     // QDialog::exec ensures modality, as opposed to QDialog::show.
     return ModalWindow(modality, application_, identifier).exec();
 }
+
+
+void Window::showEvent(QShowEvent* const event)
+{
+    //TODO Implement custom show event handler.
+    QMainWindow::showEvent(event);
+/*
+    window.setView(View::Identifier::Content);
+
+
+
+
+
+        auto& window = *application_.appWindow;
+        auto& layout = *window.widgetsLayout;
+
+        window.hide();
+        window.setupSizeGrip();
+        layout.addWidget(libraryView_);
+        window.sizeGrip->show();
+        window.onWidgetChange(libraryView_);
+        window.move(QApplication::desktop()->screen(QApplication::desktop()->screenNumber(&window))->rect().center() - window.rect().center());
+        window.show();
+*/
+}

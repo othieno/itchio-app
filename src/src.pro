@@ -9,6 +9,7 @@ INCLUDEPATH += \
     logic \
     logic/domain \
     logic/manager \
+    persistence \
     persistence/dao \
     presentation \
     presentation/controllers \
@@ -34,7 +35,8 @@ HEADERS += \
     presentation/views/view.h \
     presentation/views/libraryview.h \
     presentation/views/loginpromptview.h \
-    presentation/modalwindow.h
+    presentation/modalwindow.h \
+    persistence/database.h
 
 SOURCES += \
     itchio.cpp \
@@ -55,7 +57,8 @@ SOURCES += \
     presentation/views/loginpromptview.cpp \
     presentation/views/view.cpp \
     presentation/modalwindow.cpp \
-    logic/manager/manager.cpp
+    logic/manager/manager.cpp \
+    persistence/database.cpp
 
 FORMS += \
     presentation/forms/appwindow.ui \

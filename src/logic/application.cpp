@@ -7,6 +7,7 @@
 using itchio::Application;
 using itchio::Settings;
 using itchio::Window;
+using itchio::DatabaseManager;
 using itchio::NetworkManager;
 using itchio::Authenticator;
 using itchio::ContentManager;
@@ -18,13 +19,14 @@ Application::Application(int& argc, char** argv) :
 QApplication(argc, argv),
 settings_(QString("%1/%2.ini").arg(dataLocation(), applicationName()), QSettings::IniFormat),
 window_(*this),
+databaseManager_(*this),
 networkManager_(*this),
 authenticator_(*this),
 contentManager_(*this)
 {
     connect(&networkManager_, &NetworkManager::initialized, this, &Application::onNetworkManagerInitialized);
     connect(&authenticator_, &Authenticator::authenticated, this, &Application::onUserAuthenticated);
-//TODO    connect(&contentManager_, &ContentManager::userSessionClosed, this, &Application::onUserSessionClosed);
+//TODO    connect(&sessionManager_, &SessionManager::userSessionClosed, this, &Application::onUserSessionClosed);
 
     setApplicationStyle();
 
@@ -57,6 +59,20 @@ Window& Application::window()
 const Window& Application::window() const
 {
     return window_;
+}
+/*!
+ * \brief Returns the application's database manager.
+ */
+DatabaseManager& Application::databaseManager()
+{
+    return databaseManager_;
+}
+/*!
+ * \brief Returns a const-reference to the application's database manager.
+ */
+const DatabaseManager& Application::databaseManager() const
+{
+    return databaseManager_;
 }
 /*!
  * \brief Returns the application's network manager.
@@ -119,13 +135,27 @@ QString Application::dataLocation()
 */
 }
 /*!
- * \brief Creates a data location directory and returns true if successful, false otherwise.
- * If the directory already exists, then true is returned.
+ * \brief Creates the data directories used by the application and returns true if successful, false otherwise.
+ * If all directories already exist, then true is returned.
  */
-bool Application::createDataLocation()
+bool Application::createDataDirectories()
 {
-    const QDir directory(dataLocation());
-    return directory.exists() || directory.mkpath(".");
+    const auto& locations =
+    {
+        dataLocation(),
+        DatabaseManager::databaseLocation(),
+        ContentManager::cacheLocation(),
+    };
+    for (const auto& location : locations)
+    {
+        const QDir directory(location);
+        if (!directory.exists() && !directory.mkpath("."))
+        {
+            qWarning() << "[Application] WARN: Could not create the data directory" << location;
+            return false;
+        }
+    }
+    return true;
 }
 /*!
  * \brief Restarts the application.
@@ -146,7 +176,7 @@ void Application::setApplicationStyle()
         file.close();
     }
     else
-        qWarning("[%s] Could not load default stylesheet!", qPrintable(applicationName()));
+        qWarning() << "[Application] WARN: Could not load default stylesheet!";
 }
 /*!
  * \brief Initializes the authenticator when the network manager is ready.
@@ -160,13 +190,14 @@ void Application::onNetworkManagerInitialized()
  */
 void Application::onUserAuthenticated(const User& user)
 {
-    if (settings_.autoLogin())
+    if (settings_.autoLogin() && (settings_.apiKey() != user.key || settings_.username() != user.username))
     {
         settings_.setApiKey(user.key);
         settings_.setUsername(user.username);
     }
 
-    contentManager_.showUserContent(user);
+    contentManager_.setUser(user);
+    window_.showMaximized();
 }
 /*!
  * \brief Shows the authentication screen when a user logs out of their session.

@@ -1,7 +1,7 @@
 # This include file must be appended to src.pro, and NOT prepended.
 
 # Add the necessary modules.
-QT += core gui network
+QT += core gui network sql
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 #
@@ -29,4 +29,4 @@ CONFIG += debug
 CONFIG += c++11
 
 # Add compiler flags for extra error checking.
-QMAKE_CXXFLAGS += -Wall -Wextra #-Werror -Wundef -Woverloaded-virtual #-Wshadow
+QMAKE_CXXFLAGS += -g -Wall -Wextra #-Werror -Wundef -Woverloaded-virtual #-Wshadow
