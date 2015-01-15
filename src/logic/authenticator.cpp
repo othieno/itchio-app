@@ -1,6 +1,5 @@
 #include "authenticator.h"
 #include "application.h"
-#include "modalwindow.h"
 #include "user.h"
 #include "networkmanager.h"
 #include <QJsonDocument>
@@ -16,41 +15,8 @@ networkManager_(application.networkManager())
     connect(&networkManager_, &NetworkManager::receivedUserAuthentication, this, &Authenticator::onReceivedUserAuthentication);
 }
 /*!
- * \brief Displays the authentication screen.
+ * \brief Authenticates a \a username and \a password pair.
  */
-void Authenticator::showUserAuthentication()
-{
-    auto& window = application_.window();
-
-    // If the modal window was rejected, then the user explicitly closed the authentication window.
-    // The application is exited as a consequence.
-    if (window.openModalWindow(View::Identifier::LoginPrompt, Qt::ApplicationModal) == QDialog::Rejected)
-        exit(0);
-
-
-
-
-
-
-
-
-
-
-
-/*
-    // A login prompt is created only if we have no API key, or a key that cannot be authenticated.
-    const auto& settings = application_.settings();
-    if (!settings.hasValidApiKey())
-        onUserDisconnected();
-    else
-    {
-        //TODO Complete me.
-        const auto& username = settings.username();
-        const auto& key = settings.apiKey();
-    }
-*/
-}
-
 void Authenticator::authenticate(const QString& username, const QString& password)
 {
     currentUsername_ = username;

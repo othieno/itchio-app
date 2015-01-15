@@ -1,53 +1,54 @@
 #include "window.h"
-#include "modalwindow.h"
+#include "ui_window.h"
+#include "dialog.h"
 
 using itchio::Window;
-using itchio::ModalWindow;
-using itchio::View;
 
 /*!
  * \brief Instantiates the main window of a specified \a application.
  */
-Window::Window(Application& application) :
-application_(application)
-{}
-/*!
- * \brief Returns the current view's identifier, or View::Identifier::None is no view is set.
- */
-View::Identifier Window::viewIdentifier() const
+Window::Window(Application* const application) :
+application_(application),
+ui_(nullptr),
+contentView_(nullptr)
 {
-    return View::Identifier::None;//TODO view_ != nullptr ? view_->identifier() : View::Identifier::None;
+    Q_ASSERT(application_ != nullptr);
 }
 /*!
- * \brief Sets the window's view to the view with the specified \a identifier.
+ * \brief Destroys the Window instance.
  */
-void Window::setView(const View::Identifier& identifier)
+Window::~Window()
 {
-    //TODO Implement me.
-    Q_UNUSED(identifier);
+    if (ui_ != nullptr)
+        delete ui_;
 }
 /*!
- * \brief Displays the modal dialog with the view specified by \a identifier.
+ * \brief Displays the modal dialog with the specified view \a type.
+ * Returns true if the dialog was accepted, false otherwise.
  */
-int Window::openModalWindow(const View::Identifier& identifier, const Qt::WindowModality modality)
+bool Window::openDialog(const DialogViewType& type)
 {
-    // QDialog::exec ensures modality, as opposed to QDialog::show.
-    return ModalWindow(modality, application_, identifier).exec();
+    // Note: QDialog::exec ensures modality, as opposed to QDialog::show.
+    return Dialog(type, *application_).exec() == QDialog::Accepted;
 }
-
-
+/*!
+ * \brief Handles QShowEvents for the Window.
+ */
 void Window::showEvent(QShowEvent* const event)
 {
-    //TODO Implement custom show event handler.
-    QMainWindow::showEvent(event);
+#ifdef TODO
+    // If the user interface has not been initialized, do so.
+    if (ui_ == nullptr)
+    {
+        ui_ = new Ui::Window;
+        Q_ASSERT(ui_ != nullptr);
+        ui_->setupUi(this);
+
+        //TODO Complete custom show event handler.
+//        contentView_ = new ContentView();
+    }
+
 /*
-    window.setView(View::Identifier::Content);
-
-
-
-
-
-        auto& window = *application_.appWindow;
         auto& layout = *window.widgetsLayout;
 
         window.hide();
@@ -58,4 +59,6 @@ void Window::showEvent(QShowEvent* const event)
         window.move(QApplication::desktop()->screen(QApplication::desktop()->screenNumber(&window))->rect().center() - window.rect().center());
         window.show();
 */
+#endif
+    QMainWindow::showEvent(event);
 }

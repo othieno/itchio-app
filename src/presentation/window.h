@@ -2,29 +2,29 @@
 #define WINDOW_H
 
 #include <QMainWindow>
-#include "view.h"
+#include "dialogviewtype.h"
+
+namespace Ui { class Window; }
 
 namespace itchio {
 
 class Application;
-class ModalWindow;
+class ContentView;
 
 class Window Q_DECL_FINAL : public QMainWindow
 {
     friend class Application;
-
 public:
-    View::Identifier viewIdentifier() const;
-    void setView(const View::Identifier& view);
-
-    int openModalWindow(const View::Identifier& view, const Qt::WindowModality modality = Qt::WindowModal);
-
+    bool openDialog(const DialogViewType& type);
 private:
-    explicit Window(Application& application);
+    explicit Window(Application* const application);
+    ~Window();
 
     void showEvent(QShowEvent* const event) Q_DECL_OVERRIDE;
 
-    Application& application_;
+    Application* const application_;
+    Ui::Window* ui_;
+    ContentView* contentView_;
 };
 
 } // namespace itchio

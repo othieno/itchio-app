@@ -20,8 +20,6 @@ public:
 private:
     explicit Authenticator(Application& application);
 
-    void showUserAuthentication();
-
     NetworkManager& networkManager_;
     QString currentUsername_;
 private slots:

@@ -1,0 +1,44 @@
+#ifndef AUTHENTICATIONVIEW_H
+#define AUTHENTICATIONVIEW_H
+
+#include "abstractview.h"
+
+class QLabel;
+class QLineEdit;
+class QPushButton;
+namespace Ui { class LoginPromptView; } // TODO Change LoginPromptView to AuthenticationView.
+
+namespace itchio {
+
+class Authenticator;
+class Dialog;
+
+class AuthenticationView Q_DECL_FINAL : public AbstractView
+{
+    Q_OBJECT
+public:
+    AuthenticationView(Dialog* const dialog, Authenticator& authenticator);
+    ~AuthenticationView();
+
+    inline QString title() const Q_DECL_OVERRIDE { return "Login"; }
+    inline bool isResizable() const Q_DECL_OVERRIDE { return false; }
+    inline bool isCentered() const Q_DECL_OVERRIDE { return true; }
+private:
+    void disableInputComponents(const bool disable = true);
+
+    QString username() const;
+    QString password() const;
+
+    void setStatusMessage(const QString& message) const;
+
+    Ui::LoginPromptView* const ui_;
+    Authenticator& authenticator_;
+private slots:
+    void onInputChanged();
+    void onLoginButtonClicked();
+    void onAuthenticationFailed(const QString& message);
+};
+
+} // namespace itchio
+
+#endif // AUTHENTICATIONVIEW_H

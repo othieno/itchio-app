@@ -32,11 +32,12 @@ HEADERS += \
     persistence/dao/gamedao.h \
     presentation/window.h \
     presentation/controllers/abstractcontroller.h \
-    presentation/views/view.h \
-    presentation/views/libraryview.h \
-    presentation/views/loginpromptview.h \
-    presentation/modalwindow.h \
-    persistence/database.h
+    persistence/database.h \
+    presentation/dialog.h \
+    presentation/views/abstractview.h \
+    presentation/views/contentview.h \
+    presentation/views/authenticationview.h \
+    presentation/views/dialogviewtype.h
 
 SOURCES += \
     itchio.cpp \
@@ -53,12 +54,12 @@ SOURCES += \
     logic/manager/networkmanager.cpp \
     persistence/dao/gamedao.cpp \
     presentation/controllers/abstractcontroller.cpp \
-    presentation/views/libraryview.cpp \
-    presentation/views/loginpromptview.cpp \
-    presentation/views/view.cpp \
-    presentation/modalwindow.cpp \
     logic/manager/manager.cpp \
-    persistence/database.cpp
+    persistence/database.cpp \
+    presentation/dialog.cpp \
+    presentation/views/abstractview.cpp \
+    presentation/views/contentview.cpp \
+    presentation/views/authenticationview.cpp
 
 FORMS += \
     presentation/forms/appwindow.ui \

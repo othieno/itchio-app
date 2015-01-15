@@ -18,7 +18,7 @@ using itchio::ContentManager;
 Application::Application(int& argc, char** argv) :
 QApplication(argc, argv),
 settings_(QString("%1/%2.ini").arg(dataLocation(), applicationName()), QSettings::IniFormat),
-window_(*this),
+window_(this),
 databaseManager_(*this),
 networkManager_(*this),
 authenticator_(*this),
@@ -179,11 +179,11 @@ void Application::setApplicationStyle()
         qWarning() << "[Application] WARN: Could not load default stylesheet!";
 }
 /*!
- * \brief Initializes the authenticator when the network manager is ready.
+ * \brief Displays the authentication screen when the network manager is initialized.
  */
 void Application::onNetworkManagerInitialized()
 {
-    authenticator_.showUserAuthentication();
+    onUserSessionClosed();
 }
 /*!
  * \brief Initializes the content manager with the specified \a user.
@@ -200,9 +200,12 @@ void Application::onUserAuthenticated(const User& user)
     window_.showMaximized();
 }
 /*!
- * \brief Shows the authentication screen when a user logs out of their session.
+ * \brief Displays the authentication screen when no user session is opened.
  */
 void Application::onUserSessionClosed()
 {
-    authenticator_.showUserAuthentication();
+    // If the modal dialog is rejected, then the user has explicitly closed the
+    // authentication window. The application gracefully exits as a consequence.
+    if (!window_.openDialog(DialogViewType::Authentication))
+        ::exit(0);
 }
