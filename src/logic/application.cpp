@@ -24,13 +24,17 @@ networkManager_(*this),
 authenticator_(*this),
 contentManager_(*this)
 {
-    connect(&networkManager_, &NetworkManager::initialized, this, &Application::onNetworkManagerInitialized);
-    connect(&authenticator_, &Authenticator::authenticated, this, &Application::onUserAuthenticated);
-//TODO    connect(&sessionManager_, &SessionManager::userSessionClosed, this, &Application::onUserSessionClosed);
+    connect(&authenticator_, &Authenticator::authenticated, this, &Application::onUserSessionCreated);
 
-    setApplicationStyle();
-
+//    setApplicationStyle();
     networkManager_.initialize();
+}
+/*!
+ * \brief Displays the authentication dialog and returns true if it was accepted, false if it was rejected.
+ */
+bool Application::openAuthenticationDialog()
+{
+    return window_.openDialog(itchio::DialogViewType::Authentication);
 }
 /*!
  * \brief Returns the application's settings.
@@ -179,16 +183,9 @@ void Application::setApplicationStyle()
         qWarning() << "[Application] WARN: Could not load default stylesheet!";
 }
 /*!
- * \brief Displays the authentication screen when the network manager is initialized.
- */
-void Application::onNetworkManagerInitialized()
-{
-    onUserSessionClosed();
-}
-/*!
  * \brief Initializes the content manager with the specified \a user.
  */
-void Application::onUserAuthenticated(const User& user)
+void Application::onUserSessionCreated(const User& user)
 {
     if (settings_.autoLogin() && (settings_.apiKey() != user.key || settings_.username() != user.username))
     {
@@ -198,14 +195,4 @@ void Application::onUserAuthenticated(const User& user)
 
     contentManager_.setUser(user);
     window_.showMaximized();
-}
-/*!
- * \brief Displays the authentication screen when no user session is opened.
- */
-void Application::onUserSessionClosed()
-{
-    // If the modal dialog is rejected, then the user has explicitly closed the
-    // authentication window. The application gracefully exits as a consequence.
-    if (!window_.openDialog(DialogViewType::Authentication))
-        ::exit(0);
 }

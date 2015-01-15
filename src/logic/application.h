@@ -17,6 +17,8 @@ class Application : public QApplication
 public:
     Application(int& argc, char** argv);
 
+    bool openAuthenticationDialog();
+
     Settings& settings();
     const Settings& settings() const;
 
@@ -53,9 +55,7 @@ private:
     Authenticator authenticator_;
     ContentManager contentManager_;
 private slots:
-    void onNetworkManagerInitialized();
-    void onUserAuthenticated(const User& user);
-    void onUserSessionClosed();
+    void onUserSessionCreated(const User& user);
 };
 
 } // namespace itchio

@@ -8,15 +8,23 @@ int main(int argc, char** argv)
     QCoreApplication::setApplicationVersion("0.0");
     QCoreApplication::setApplicationName("itch");
 
-    int status = 0;
     do
     {
         // Make sure we have access to a directory where application data can be stored.
         if (!itchio::Application::createDataDirectories())
             qFatal("FATAL: Could not create the application's data directories.");
 
-        status = itchio::Application(argc, argv).exec();
-    } while (status == itchio::Application::RESTART_ON_EXIT_CODE);
+        itchio::Application application(argc, argv);
 
-    return status;
+        // If the authentication dialog is rejected, the user explicitly closed the
+        // authentication window. The application should gracefully exit as a consequence.
+        if (!application.openAuthenticationDialog())
+            return 0;
+
+        // Start the event loop.
+        const int status = application.exec();
+        if (status != itchio::Application::RESTART_ON_EXIT_CODE)
+            return status;
+
+    } while (true);
 }
