@@ -88,7 +88,7 @@ void ContentManager::setAutoUpdateInterval(const int milliseconds)
  */
 GameDAO& ContentManager::gameDAO()
 {
-    static GameDAO GAMEDAO_INSTANCE(&userDatabase_);
+    static GameDAO GAMEDAO_INSTANCE(userDatabase_);
     return GAMEDAO_INSTANCE;
 }
 /*!

@@ -9,7 +9,7 @@ namespace itchio {
 class GameDAO Q_DECL_FINAL : public AbstractDAO<Game, unsigned int>
 {
 public:
-    explicit GameDAO(Database* const database);
+    explicit GameDAO(Database& database);
 
     void save(const Game& game) Q_DECL_OVERRIDE;
 

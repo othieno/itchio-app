@@ -10,7 +10,7 @@ using itchio::Game;
 /*!
  * \brief Instantiates a GameDAO that interacts with the specified \a database.
  */
-GameDAO::GameDAO(Database* const database) :
+GameDAO::GameDAO(Database& database) :
 AbstractDAO(database)
 {}
 /*!
@@ -34,14 +34,14 @@ void GameDAO::createTables()
     "publishDate     VARCHAR(128)"
     ")";
 
-    database_->exec(CREATE_STATEMENT);
+    database_.exec(CREATE_STATEMENT);
 }
 /*!
  * \brief Drops all database tables created by this DAO.
  */
 void GameDAO::dropTables()
 {
-    database_->exec("DROP TABLE games");
+    database_.exec("DROP TABLE games");
 }
 /*!
  * \brief Populates tables with mock data.
@@ -82,7 +82,7 @@ void GameDAO::save(const Game& game)
     "NULL" //TODO publishDate
     ")";
 
-    QSqlQuery query(*database_);
+    QSqlQuery query(database_);
     query.prepare(INSERT_STATEMENT);
 
     query.bindValue(":identifier", game.identifier);
@@ -103,7 +103,7 @@ Game GameDAO::get(const unsigned int& identifier) const
 {
     const auto& SELECT_STATEMENT = QString("SELECT * FROM games WHERE identifier = '%1'").arg(identifier);
 
-    auto query = database_->exec(SELECT_STATEMENT);
+    auto query = database_.exec(SELECT_STATEMENT);
 
     return query.next() ? toDomainObject(query) : Game();
 }
@@ -113,7 +113,7 @@ Game GameDAO::get(const unsigned int& identifier) const
 QList<Game> GameDAO::getAll() const
 {
     QList<Game> result;
-    auto query = database_->exec("SELECT * FROM games");
+    auto query = database_.exec("SELECT * FROM games");
     while (query.next())
         result.append(toDomainObject(query));
 
@@ -126,7 +126,7 @@ void GameDAO::remove(const unsigned int& identifier)
 {
     const auto& DELETE_STATEMENT = QString("DELETE FROM games WHERE identifier = '%1'").arg(identifier);
 
-    database_->exec(DELETE_STATEMENT);
+    database_.exec(DELETE_STATEMENT);
 }
 /*!
  * \brief Returns all games with the specified \a title.
@@ -140,7 +140,7 @@ QList<Game> GameDAO::getGamesByTitle(const QString& title, const bool caseInsens
     }
 
     QList<Game> result;
-    auto query = database_->exec(SELECT_STATEMENT);
+    auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
         result.append(toDomainObject(query));
 
@@ -158,7 +158,7 @@ QList<Game> GameDAO::getGamesByAuthor(const QString& author, const bool caseInse
     }
 
     QList<Game> result;
-    auto query = database_->exec(SELECT_STATEMENT);
+    auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
         result.append(toDomainObject(query));
 
@@ -181,7 +181,7 @@ QList<Game> GameDAO::getGamesByGenre(const Game::Genre& genre) const
 
 
     QList<Game> result;
-    auto query = database_->exec(SELECT_STATEMENT);
+    auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
         result.append(toDomainObject(query));
 
@@ -205,7 +205,7 @@ QList<Game> GameDAO::getGamesByPlatform(const Game::Platform& platform) const
 
 
     QList<Game> result;
-    auto query = database_->exec(SELECT_STATEMENT);
+    auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
         result.append(toDomainObject(query));
 
@@ -221,7 +221,7 @@ QList<Game> GameDAO::getGamesByStatus(const Game::Status& status) const
     QString("SELECT * FROM games WHERE status = '%1'").arg(static_cast<int>(status));
 
     QList<Game> result;
-    auto query = database_->exec(SELECT_STATEMENT);
+    auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
         result.append(toDomainObject(query));
 
@@ -236,7 +236,7 @@ QList<Game> GameDAO::getGamesByVisibility(const Game::Visibility& visibility) co
     QString("SELECT * FROM games WHERE visibility = '%1'").arg(static_cast<int>(visibility));
 
     QList<Game> result;
-    auto query = database_->exec(SELECT_STATEMENT);
+    auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
         result.append(toDomainObject(query));
 

@@ -18,7 +18,7 @@ using itchio::ContentManager;
 Application::Application(int& argc, char** argv) :
 QApplication(argc, argv),
 settings_(QString("%1/%2.ini").arg(dataLocation(), applicationName()), QSettings::IniFormat),
-window_(this),
+window_(*this),
 databaseManager_(*this),
 networkManager_(*this),
 authenticator_(*this),

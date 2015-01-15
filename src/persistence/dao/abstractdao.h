@@ -33,11 +33,9 @@ protected:
     /*!
      * Instantiates an abstract data access object that interacts with the specified \a database.
      */
-    explicit AbstractDAO(Database* const database) :
+    explicit AbstractDAO(Database& database) :
     database_(database)
-    {
-        Q_ASSERT(database_ != nullptr);
-    }
+    {}
     /*!
      * Creates the database tables used by this data access object.
      */
@@ -57,7 +55,7 @@ protected:
     /*!
      * The database to query.
      */
-    Database* const database_;
+    Database& database_;
 };
 
 } // namespace itchio

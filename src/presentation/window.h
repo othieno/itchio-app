@@ -17,12 +17,12 @@ class Window Q_DECL_FINAL : public QMainWindow
 public:
     bool openDialog(const DialogViewType& type);
 private:
-    explicit Window(Application* const application);
+    explicit Window(Application& application);
     ~Window();
 
     void showEvent(QShowEvent* const event) Q_DECL_OVERRIDE;
 
-    Application* const application_;
+    Application& application_;
     Ui::Window* ui_;
     ContentView* contentView_;
 };

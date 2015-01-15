@@ -7,13 +7,11 @@ using itchio::Window;
 /*!
  * \brief Instantiates the main window of a specified \a application.
  */
-Window::Window(Application* const application) :
+Window::Window(Application& application) :
 application_(application),
 ui_(nullptr),
 contentView_(nullptr)
-{
-    Q_ASSERT(application_ != nullptr);
-}
+{}
 /*!
  * \brief Destroys the Window instance.
  */
@@ -29,7 +27,7 @@ Window::~Window()
 bool Window::openDialog(const DialogViewType& type)
 {
     // Note: QDialog::exec ensures modality, as opposed to QDialog::show.
-    return Dialog(type, *application_).exec() == QDialog::Accepted;
+    return Dialog(type, application_).exec() == QDialog::Accepted;
 }
 /*!
  * \brief Handles QShowEvents for the Window.
