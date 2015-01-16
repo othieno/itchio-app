@@ -23,7 +23,7 @@ tests      : $(TESTSUITE_MAKEFILE) client
 benchmarks : $(BENCHMARKSUITE_MAKEFILE) client
 
 client tests benchmarks:
-	@$(MAKE) --directory $(BUILD_DIR) --file $(notdir $<) -$(MAKEFLAGS)
+	$(MAKE) --directory $(BUILD_DIR) --file $(notdir $<) -$(MAKEFLAGS)
 
 all: client tests benchmarks
 
@@ -31,7 +31,7 @@ run: client
 	@$(BUILD_DIR)/$(CLIENT)
 
 run-tests: tests
-	@$(BUILD_DIR)/$(TESTSUITE)
+	$(BUILD_DIR)/$(TESTSUITE)
 
 run-benchmarks: benchmarks
 	@$(BUILD_DIR)/$(BENCHMARKSUITE)
@@ -61,5 +61,5 @@ $(TESTSUITE_MAKEFILE)      : $(TESTSUITE_PRO)
 $(BENCHMARKSUITE_MAKEFILE) : $(BENCHMARKSUITE_PRO)
 
 $(CLIENT_MAKEFILE) $(TESTSUITE_MAKEFILE) $(BENCHMARKSUITE_MAKEFILE):
-	@mkdir -p $(BUILD_DIR)
-	@qmake -Wall $< -o $@
+	mkdir -p $(BUILD_DIR)
+	qmake -Wall $< -o $@
