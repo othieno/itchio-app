@@ -40,7 +40,7 @@ public:
     static QString dataLocation();
     static bool createDataDirectories();
 
-    constexpr static unsigned int RESTART_ON_EXIT_CODE = 0x49544348; // 0x49544348 = 'ITCH' (ASCII 8).
+    static constexpr int RESTART_ON_EXIT_CODE = 0x49544348; // 0x49544348 = 'ITCH' (ASCII 8).
 public slots:
     void restart();
 private:

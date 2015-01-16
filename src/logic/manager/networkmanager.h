@@ -38,7 +38,7 @@ public:
     void requestApiServerStatus();
     void requestApiEncryptionKey();
 
-    constexpr static const char* const API_URL = "https://itch.io/api/1";
+    static constexpr const char* API_URL = "https://itch.io/api/1";
 private:
     explicit NetworkManager(Application& application);
 

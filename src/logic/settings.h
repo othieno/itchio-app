@@ -52,9 +52,9 @@ private:
         return QSettings::value(Settings::toString(key), defaultValue);
     }
 
-    constexpr static const bool DEFAULT_AUTO_LOGIN = true;
-    constexpr static const bool DEFAULT_SHOW_TRAY_NOTIFICATIONS = true;
-    constexpr static const bool DEFAULT_AUTO_UPDATE_CHECKS = true;
+    static constexpr bool DEFAULT_AUTO_LOGIN = true;
+    static constexpr bool DEFAULT_SHOW_TRAY_NOTIFICATIONS = true;
+    static constexpr bool DEFAULT_AUTO_UPDATE_CHECKS = true;
 };
 
 #endif // SETTINGS_H

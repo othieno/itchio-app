@@ -18,7 +18,7 @@ UI_DIR       = $$DESTDIR/ui
 
 # Enable C++11 support and add compiler flags that promote extra error checking.
 CONFIG *= c++11
-QMAKE_CXXFLAGS *= -g -Wall -Wextra #-Werror -Wundef -Woverloaded-virtual #-Wshadow
+#QMAKE_CXXFLAGS *= -g -Wall -Wextra #-Werror -Wundef -Woverloaded-virtual #-Wshadow
 
 # Turn on debugging to enable features that are disabled when the QT_NO_DEBUG is set, e.g. Q_ASSERT.
 CONFIG *= debug
