@@ -3,14 +3,18 @@ TESTSUITE               = $(CLIENT)-testsuite
 BENCHMARKSUITE          = $(CLIENT)-benchmarksuite
 
 SRC_DIR                 = src
-TESTSUITE_DIR           = test/unit
-BENCHMARKSUITE_DIR      = test/benchmark
 BUILD_DIR               = build
 
+CLIENT_PRO              = itchio.pro
 CLIENT_MAKEFILE         = $(BUILD_DIR)/Makefile.$(CLIENT)
-TESTSUITE_MAKEFILE      = $(BUILD_DIR)/Makefile.$(TESTSUITE)
-BENCHMARKSUITE_MAKEFILE = $(BUILD_DIR)/Makefile.$(BENCHMARKSUITE)
 
+TESTSUITE_DIR           = test/unit
+TESTSUITE_PRO           = $(TESTSUITE_DIR)/unit.pro
+TESTSUITE_MAKEFILE      = $(BUILD_DIR)/Makefile.$(TESTSUITE)
+
+BENCHMARKSUITE_DIR      = test/benchmark
+BENCHMARKSUITE_PRO      = $(BENCHMARKSUITE_DIR)/benchmark.pro
+BENCHMARKSUITE_MAKEFILE = $(BUILD_DIR)/Makefile.$(BENCHMARKSUITE)
 
 .PHONY: client tests benchmarks all run run-tests run-benchmarks format clean help
 
@@ -52,10 +56,10 @@ help:
 	@echo "  help              Print this help page."
 	@echo
 
-$(CLIENT_MAKEFILE)         : $(SRC_DIR)
-$(TESTSUITE_MAKEFILE)      : $(TESTSUITE_DIR)
-$(BENCHMARKSUITE_MAKEFILE) : $(BENCHMARKSUITE_DIR)
+$(CLIENT_MAKEFILE)         : $(CLIENT_PRO)
+$(TESTSUITE_MAKEFILE)      : $(TESTSUITE_PRO)
+$(BENCHMARKSUITE_MAKEFILE) : $(BENCHMARKSUITE_PRO)
 
 $(CLIENT_MAKEFILE) $(TESTSUITE_MAKEFILE) $(BENCHMARKSUITE_MAKEFILE):
 	@mkdir -p $(BUILD_DIR)
-	@qmake -Wall $</$(notdir $<).pro -o $@
+	@qmake -Wall $< -o $@
