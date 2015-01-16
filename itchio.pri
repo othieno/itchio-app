@@ -1,6 +1,6 @@
 # The project relies on features in Qt 5.4 and later.
 # TODO Change greaterThan(QT_MINOR_VERSION, 2) to greaterThan(QT_MINOR_VERSION, 3).
-greaterThan(QT_MAJOR_VERSION, 4):greaterThan(QT_MINOR_VERSION, 2) {
+#greaterThan(QT_MAJOR_VERSION, 4):greaterThan(QT_MINOR_VERSION, 2) {
 
 # Include the necessary modules.
 QT *= core gui widgets network sql
@@ -26,4 +26,4 @@ CONFIG *= debug
 # Resource files.
 RESOURCES += res/resources.qrc
 
-} else: error(The current Qt version ($$QT_VERSION) is unsupported. Please update your Qt installation to version 5.4 or later.)
+#} else: error(The current Qt version ($$QT_VERSION) is unsupported. Please update your Qt installation to version 5.4 or later.)
