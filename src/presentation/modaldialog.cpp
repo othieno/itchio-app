@@ -1,20 +1,19 @@
-#include "dialog.h"
+#include "modaldialog.h"
 #include "ui_window.h"
 #include "application.h"
 #include "authenticationview.h"
 
-using itchio::Dialog;
+using itchio::ModalDialog;
 using itchio::AbstractView;
 
 /*!
- * Instantiates a Dialog with the specified \a type.
+ * Instantiates a ModalDialog with the specified \a type.
  */
-Dialog::Dialog(const DialogViewType& type, Application& application) :
+ModalDialog::ModalDialog(const ModalDialog::Identifier& identifier, Application& application) :
 QDialog(nullptr/*TODO , Qt::CustomizeWindowHint |  Qt::FramelessWindowHint | Qt::Dialog*/),
 ui_(new Ui::Window)
 {
     Q_ASSERT(ui_ != nullptr);
-
     //TODO Uncomment this when the dialog UI is complete.
 //    ui_->setupUi(this);
 
@@ -25,7 +24,7 @@ ui_(new Ui::Window)
 //    onWidgetChange(*this);
 //    sizeGrip->hide();
 #endif
-    auto* const view = createDialogView(type, application);
+    auto* const view = createDialogView(identifier, application);
     if (view != nullptr)
     {
         setWindowTitle(QString("%1 - %2").arg(application.applicationName(), view->title()));
@@ -34,16 +33,16 @@ ui_(new Ui::Window)
     }
 }
 /*!
- * \brief Destroys the Dialog instance.
+ * \brief Destroys the ModalDialog instance.
  */
-Dialog::~Dialog()
+ModalDialog::~ModalDialog()
 {
     delete ui_;
 }
 /*!
- * \brief Centers the dialog window if \a centered is set to true, otherwise does nothing.
+ * \brief Centers the modal dialog if \a centered is set to true, otherwise does nothing.
  */
-void Dialog::setCentered(const bool centered)
+void ModalDialog::setCentered(const bool centered)
 {
     if (centered)
         move(QPoint(0, 0));
@@ -51,21 +50,21 @@ void Dialog::setCentered(const bool centered)
 /*!
  * \brief Enables window resizing if \a resizable is set to true, disables it otherwise.
  */
-void Dialog::setResizable(const bool resizable)
+void ModalDialog::setResizable(const bool resizable)
 {
     auto* const dialogLayout = layout();
     if (dialogLayout != nullptr)
         dialogLayout->setSizeConstraint(resizable ? QLayout::SetDefaultConstraint : QLayout::SetFixedSize);
 }
 /*!
- * \brief Instantiates an AbstractView with the specified \a type that is a child of this dialog window.
+ * \brief Instantiates an AbstractView with the specified \a identifier that is a child of this dialog window.
  */
-AbstractView* Dialog::createDialogView(const DialogViewType& type, Application& application)
+AbstractView* ModalDialog::createDialogView(const ModalDialog::Identifier& identifier, Application& application)
 {
-    switch (type)
+    switch (identifier)
     {
-        case DialogViewType::Authentication:
-            return new AuthenticationView(this, application.authenticator());
+        case ModalDialog::Identifier::Authentication:
+            return new AuthenticationView(*this, application.authenticator());
         default:
             return nullptr;
     }

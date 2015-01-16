@@ -1,13 +1,12 @@
 #include "authenticationview.h"
 #include "ui_loginprompt.h"
+#include "modaldialog.h"
 #include "authenticator.h"
-#include "dialog.h"
 
 using itchio::AuthenticationView;
 
-
-AuthenticationView::AuthenticationView(Dialog* const parent, Authenticator& authenticator) :
-AbstractView(parent),
+AuthenticationView::AuthenticationView(ModalDialog& dialog, Authenticator& authenticator) :
+AbstractView(&dialog),
 ui_(new Ui::LoginPromptView),
 authenticator_(authenticator)
 {
@@ -18,7 +17,7 @@ authenticator_(authenticator)
     connect(ui_->usernameInput, &QLineEdit::textChanged, this, &AuthenticationView::onInputChanged);
     connect(ui_->passwordInput, &QLineEdit::textChanged, this, &AuthenticationView::onInputChanged);
 
-    connect(&authenticator_, &Authenticator::authenticated, parent, &Dialog::accept);
+    connect(&authenticator_, &Authenticator::authenticated, &dialog, &ModalDialog::accept);
     connect(&authenticator_, &Authenticator::authenticationFailed, this, &AuthenticationView::onAuthenticationFailed);
 
     // Disable the login button. It is only enabled if user input is valid.

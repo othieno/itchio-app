@@ -1,16 +1,19 @@
 #include "window.h"
 #include "ui_window.h"
-#include "dialog.h"
+#include <QSystemTrayIcon>
 
 using itchio::Window;
 
 /*!
- * \brief Instantiates the main window of a specified \a application.
+ * \brief Instantiates the main window of the specified \a application.
  */
 Window::Window(Application& application) :
+QMainWindow(nullptr, Qt::CustomizeWindowHint | Qt::FramelessWindowHint),
 application_(application),
 ui_(nullptr),
-contentView_(nullptr)
+catalogView_(nullptr),
+libraryView_(nullptr),
+systemTrayIcon_(nullptr)
 {}
 /*!
  * \brief Destroys the Window instance.
@@ -21,20 +24,19 @@ Window::~Window()
         delete ui_;
 }
 /*!
- * \brief Displays the modal dialog with the specified view \a type.
+ * \brief Displays the modal dialog with the specified \a identifier.
  * Returns true if the dialog was accepted, false otherwise.
  */
-bool Window::openDialog(const DialogViewType& type)
+bool Window::openModalDialog(const ModalDialog::Identifier& identifier)
 {
     // Note: QDialog::exec ensures modality, as opposed to QDialog::show.
-    return Dialog(type, application_).exec() == QDialog::Accepted;
+    return ModalDialog(identifier, application_).exec() == QDialog::Accepted;
 }
 /*!
- * \brief Handles QShowEvents for the Window.
+ * \brief Handles the window's show \a event.
  */
 void Window::showEvent(QShowEvent* const event)
 {
-#ifdef TODO
     // If the user interface has not been initialized, do so.
     if (ui_ == nullptr)
     {
@@ -42,21 +44,37 @@ void Window::showEvent(QShowEvent* const event)
         Q_ASSERT(ui_ != nullptr);
         ui_->setupUi(this);
 
-        //TODO Complete custom show event handler.
-//        contentView_ = new ContentView();
+        setWindowIcon(QIcon(":/images/window.icon"));
+
+#ifdef TODO
+        //TODO Complete me.
+//        catalogView_ = new CatalogView(this);
+//        libraryView_ = new LibraryView(this);
+#endif
+        if (systemTrayIcon_ == nullptr)
+        {
+            systemTrayIcon_ = new QSystemTrayIcon(QIcon(":/images/tray.icon"), this);
+            systemTrayIcon_->setContextMenu(nullptr); //FIXME Set correct context menu.
+            systemTrayIcon_->show();
+        }
     }
-
 /*
-        auto& layout = *window.widgetsLayout;
-
-        window.hide();
         window.setupSizeGrip();
         layout.addWidget(libraryView_);
         window.sizeGrip->show();
         window.onWidgetChange(libraryView_);
         window.move(QApplication::desktop()->screen(QApplication::desktop()->screenNumber(&window))->rect().center() - window.rect().center());
-        window.show();
 */
-#endif
     QMainWindow::showEvent(event);
+}
+/*!
+ * \brief Handles the window's close \a event.
+ */
+void Window::closeEvent(QCloseEvent* const event)
+{
+#ifdef TODO
+    event->ignore();
+    hide();
+#endif
+    QMainWindow::closeEvent(event);
 }

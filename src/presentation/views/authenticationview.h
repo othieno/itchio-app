@@ -11,13 +11,13 @@ namespace Ui { class LoginPromptView; } // TODO Change LoginPromptView to Authen
 namespace itchio {
 
 class Authenticator;
-class Dialog;
+class ModalDialog;
 
 class AuthenticationView Q_DECL_FINAL : public AbstractView
 {
     Q_OBJECT
 public:
-    AuthenticationView(Dialog* const dialog, Authenticator& authenticator);
+    AuthenticationView(ModalDialog& dialog, Authenticator& authenticator);
     ~AuthenticationView();
 
     inline QString title() const Q_DECL_OVERRIDE { return "Login"; }

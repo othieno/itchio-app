@@ -33,11 +33,10 @@ HEADERS += \
     presentation/window.h \
     presentation/controllers/abstractcontroller.h \
     persistence/database.h \
-    presentation/dialog.h \
     presentation/views/abstractview.h \
     presentation/views/contentview.h \
     presentation/views/authenticationview.h \
-    presentation/views/dialogviewtype.h
+    presentation/modaldialog.h
 
 SOURCES += \
     itchio.cpp \
@@ -56,10 +55,10 @@ SOURCES += \
     presentation/controllers/abstractcontroller.cpp \
     logic/manager/manager.cpp \
     persistence/database.cpp \
-    presentation/dialog.cpp \
     presentation/views/abstractview.cpp \
     presentation/views/contentview.cpp \
-    presentation/views/authenticationview.cpp
+    presentation/views/authenticationview.cpp \
+    presentation/modaldialog.cpp
 
 FORMS += \
     presentation/forms/appwindow.ui \

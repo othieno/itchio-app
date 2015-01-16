@@ -34,7 +34,7 @@ contentManager_(*this)
  */
 bool Application::openAuthenticationDialog()
 {
-    return window_.openDialog(itchio::DialogViewType::Authentication);
+    return window_.openModalDialog(ModalDialog::Identifier::Authentication);
 }
 /*!
  * \brief Returns the application's settings.
