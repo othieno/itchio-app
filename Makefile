@@ -62,4 +62,4 @@ $(BENCHMARKSUITE_MAKEFILE) : $(BENCHMARKSUITE_PRO)
 
 $(CLIENT_MAKEFILE) $(TESTSUITE_MAKEFILE) $(BENCHMARKSUITE_MAKEFILE):
 	@mkdir -p $(BUILD_DIR)
-	@qmake -Wall $< -o $@
+	@qtchooser -qt=5 -run-tool=qmake -makefile -Wall $< -o $@

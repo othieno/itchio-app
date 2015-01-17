@@ -7,28 +7,19 @@ using itchio::AuthenticationView;
 
 AuthenticationView::AuthenticationView(ModalDialog& dialog, Authenticator& authenticator) :
 AbstractView(&dialog),
-ui_(new Ui::LoginPromptView),
 authenticator_(authenticator)
 {
-    Q_ASSERT(ui_ != nullptr);
-    ui_->setupUi(this);
+    ui_.setupUi(this);
 
-    connect(ui_->loginButton,   &QPushButton::clicked,   this, &AuthenticationView::onLoginButtonClicked);
-    connect(ui_->usernameInput, &QLineEdit::textChanged, this, &AuthenticationView::onInputChanged);
-    connect(ui_->passwordInput, &QLineEdit::textChanged, this, &AuthenticationView::onInputChanged);
+    connect(ui_.loginButton,   &QPushButton::clicked,   this, &AuthenticationView::onLoginButtonClicked);
+    connect(ui_.usernameInput, &QLineEdit::textChanged, this, &AuthenticationView::onInputChanged);
+    connect(ui_.passwordInput, &QLineEdit::textChanged, this, &AuthenticationView::onInputChanged);
 
     connect(&authenticator_, &Authenticator::authenticated, &dialog, &ModalDialog::accept);
     connect(&authenticator_, &Authenticator::authenticationFailed, this, &AuthenticationView::onAuthenticationFailed);
 
     // Disable the login button. It is only enabled if user input is valid.
-    ui_->loginButton->setEnabled(false);
-}
-/*!
- * \brief Destroys the AuthenticationView instance.
- */
-AuthenticationView::~AuthenticationView()
-{
-    delete ui_;
+    ui_.loginButton->setEnabled(false);
 }
 /*!
  * \brief Disables the view's input components if \a disable is set to true.
@@ -37,9 +28,9 @@ void AuthenticationView::disableInputComponents(const bool disable)
 {
     const std::initializer_list<QWidget*>& widgets =
     {
-        ui_->loginButton,
-        ui_->usernameInput,
-        ui_->passwordInput
+        ui_.loginButton,
+        ui_.usernameInput,
+        ui_.passwordInput
     };
     for (auto* const widget : widgets)
     {
@@ -52,21 +43,21 @@ void AuthenticationView::disableInputComponents(const bool disable)
  */
 QString AuthenticationView::username() const
 {
-    return ui_->usernameInput->text().trimmed();
+    return ui_.usernameInput->text().trimmed();
 }
 /*!
  * \brief Returns the current password.
  */
 QString AuthenticationView::password() const
 {
-    return ui_->passwordInput->text();
+    return ui_.passwordInput->text();
 }
 /*!
  * \brief Sets the status \a message.
  */
 void AuthenticationView::setStatusMessage(const QString& message) const
 {
-    return ui_->loginStatus->setText(message);
+    return ui_.loginStatus->setText(message);
 }
 /*!
  * \brief Validates user input and enables/disables the login button depending on the correctness of said input.
@@ -76,7 +67,7 @@ void AuthenticationView::onInputChanged()
     //TODO Perform a more thorough validation.
     bool isValidInput = username() != "" && password() != "";
 
-    ui_->loginButton->setEnabled(isValidInput);
+    ui_.loginButton->setEnabled(isValidInput);
 }
 /*!
  * \brief Authenticates user input when the login button is pressed.

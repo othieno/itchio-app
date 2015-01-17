@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include <QMainWindow>
+#include <QSystemTrayIcon>
 #include "modaldialog.h"
 
 class QSystemTrayIcon;
@@ -10,8 +11,7 @@ namespace Ui { class Window; }
 namespace itchio {
 
 class Application;
-class CatalogView;
-class LibraryView;
+class AbstractView;
 
 class Window Q_DECL_FINAL : public QMainWindow
 {
@@ -22,16 +22,18 @@ private:
     explicit Window(Application& application);
     ~Window();
 
+    void initializeUserInterface();
+    void initializeContentViews();
+    void initializeSystemTrayIcon();
+
     void showEvent(QShowEvent* const event) Q_DECL_OVERRIDE;
     void closeEvent(QCloseEvent* const event) Q_DECL_OVERRIDE;
 
     Application& application_;
     Ui::Window* ui_;
-
-    CatalogView* catalogView_;
-    LibraryView* libraryView_;
-
-    QSystemTrayIcon* systemTrayIcon_;
+    QSystemTrayIcon systemTrayIcon_;
+private slots:
+    void onViewChanged(AbstractView& view);
 };
 
 } // namespace itchio

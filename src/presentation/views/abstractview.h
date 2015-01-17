@@ -9,8 +9,8 @@ class AbstractView : public QWidget
 {
 public:
     virtual QString title() const = 0;
-    virtual bool isResizable() const = 0;
-    virtual bool isCentered() const = 0;
+    virtual bool isResizable() const;
+    virtual bool isCentered() const;
 protected:
     explicit AbstractView(QWidget* const parent);
 };

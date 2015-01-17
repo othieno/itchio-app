@@ -190,7 +190,7 @@ QTabBar::tab:selected
        <enum>QTabWidget::Triangular</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>-1</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -201,28 +201,6 @@ QTabBar::tab:selected
       <property name="movable">
        <bool>false</bool>
       </property>
-      <widget class="QWidget" name="catalogView">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="cursor">
-        <cursorShape>ArrowCursor</cursorShape>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::ClickFocus</enum>
-       </property>
-       <attribute name="title">
-        <string>Catalog</string>
-       </attribute>
-      </widget>
-      <widget class="QWidget" name="libraryView">
-       <property name="focusPolicy">
-        <enum>Qt::ClickFocus</enum>
-       </property>
-       <attribute name="title">
-        <string>Library</string>
-       </attribute>
-      </widget>
      </widget>
     </item>
     <item>

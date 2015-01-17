@@ -18,8 +18,11 @@ int main(int argc, char** argv)
 
         // If the authentication dialog is rejected, the user explicitly closed the
         // authentication window. The application should gracefully exit as a consequence.
-        if (!application.openAuthenticationDialog())
-            return 0;
+//        if (!application.openAuthenticationDialog())
+//            return 0;
+
+        //TODO Remove this and uncomment the previous statements when done implementing the content UI.
+        application.window().showMaximized();
 
         // Start the event loop.
         const int status = application.exec();

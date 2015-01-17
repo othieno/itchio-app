@@ -31,9 +31,10 @@ HEADERS += \
     src/presentation/controllers/abstractcontroller.h \
     src/persistence/database.h \
     src/presentation/views/abstractview.h \
-    src/presentation/views/contentview.h \
     src/presentation/views/authenticationview.h \
-    src/presentation/modaldialog.h
+    src/presentation/modaldialog.h \
+    src/presentation/views/libraryview.h \
+    src/presentation/views/catalogview.h
 
 SOURCES += \
     src/itchio.cpp \
@@ -53,19 +54,21 @@ SOURCES += \
     src/logic/manager/manager.cpp \
     src/persistence/database.cpp \
     src/presentation/views/abstractview.cpp \
-    src/presentation/views/contentview.cpp \
     src/presentation/views/authenticationview.cpp \
-    src/presentation/modaldialog.cpp
+    src/presentation/modaldialog.cpp \
+    src/presentation/views/libraryview.cpp \
+    src/presentation/views/catalogview.cpp
 
 FORMS += \
-    src/presentation/forms/appwindow.ui \
-    src/presentation/forms/librarywidget.ui \
-    src/presentation/forms/loginwidget.ui \
     src/presentation/forms/modalwindow.ui \
     src/presentation/forms/secondarywindow.ui \
     src/presentation/forms/settingswidget.ui \
     src/presentation/forms/loginprompt.ui \
-    src/presentation/forms/content.ui \
-    src/presentation/forms/window.ui
+    src/presentation/forms/window.ui \
+    src/presentation/forms/catalogview.ui \
+    src/presentation/forms/libraryview.ui
+
+RESOURCES += \
+    res/resources.qrc
 
 include(itchio.pri)

@@ -18,12 +18,9 @@ UI_DIR       = $$DESTDIR/ui
 
 # Enable C++11 support and add compiler flags that promote extra error checking.
 CONFIG *= c++11
-QMAKE_CXXFLAGS *= -g -Wall -Wextra -Werror -pedantic-errors
+QMAKE_CXXFLAGS *= -g -Wall -Wextra -Werror -pedantic-errors -ansi
 
 # Turn on debugging to enable features that are disabled when the QT_NO_DEBUG is set, e.g. Q_ASSERT.
 CONFIG *= debug
-
-# Resource files.
-RESOURCES += res/resources.qrc
 
 #} else: error(The current Qt version ($$QT_VERSION) is unsupported. Please update your Qt installation to version 5.4 or later.)

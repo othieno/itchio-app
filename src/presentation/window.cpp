@@ -1,6 +1,7 @@
 #include "window.h"
 #include "ui_window.h"
-#include <QSystemTrayIcon>
+#include "catalogview.h"
+#include "libraryview.h"
 
 using itchio::Window;
 
@@ -11,10 +12,10 @@ Window::Window(Application& application) :
 QMainWindow(nullptr, Qt::CustomizeWindowHint | Qt::FramelessWindowHint),
 application_(application),
 ui_(nullptr),
-catalogView_(nullptr),
-libraryView_(nullptr),
-systemTrayIcon_(nullptr)
-{}
+systemTrayIcon_(QIcon(":/images/tray.icon"))
+{
+    setWindowIcon(QIcon(":/images/window.icon"));
+}
 /*!
  * \brief Destroys the Window instance.
  */
@@ -29,8 +30,58 @@ Window::~Window()
  */
 bool Window::openModalDialog(const ModalDialog::Identifier& identifier)
 {
-    // Note: QDialog::exec ensures modality, as opposed to QDialog::show.
     return ModalDialog(identifier, application_).exec() == QDialog::Accepted;
+}
+/*!
+ * \brief Initializes the content views.
+ */
+void Window::initializeUserInterface()
+{
+    ui_ = new Ui::Window;
+    Q_ASSERT(ui_ != nullptr);
+    ui_->setupUi(this);
+
+    connect(ui_->settingsButton, &QPushButton::clicked, [this]
+    {
+        openModalDialog(ModalDialog::Identifier::Settings);
+    });
+}
+/*!
+ * \brief Initializes the content views.
+ */
+void Window::initializeContentViews()
+{
+    if (ui_ != nullptr && ui_->centralWidgetContent != nullptr)
+    {
+        auto& parent = *ui_->centralWidgetContent;
+
+        connect(&parent, &QTabWidget::currentChanged, [this, &parent]
+        {
+            auto* const currentView = parent.currentWidget();
+            if (currentView != nullptr)
+                onViewChanged(static_cast<AbstractView&>(*currentView));
+        });
+
+        for (auto* const view : std::initializer_list<AbstractView*>
+        {
+            new CatalogView(parent, application_),
+            new LibraryView(parent, application_),
+        })
+        {
+            if (view != nullptr)
+                parent.addTab(view, view->title());
+        }
+        // Select the LibraryView by default.
+        parent.setCurrentIndex(1);
+    }
+}
+/*!
+ * \brief Initializes the system tray icon.
+ */
+void Window::initializeSystemTrayIcon()
+{
+    systemTrayIcon_.setContextMenu(nullptr); //FIXME Set correct context menu.
+    systemTrayIcon_.show();
 }
 /*!
  * \brief Handles the window's show \a event.
@@ -40,31 +91,10 @@ void Window::showEvent(QShowEvent* const event)
     // If the user interface has not been initialized, do so.
     if (ui_ == nullptr)
     {
-        ui_ = new Ui::Window;
-        Q_ASSERT(ui_ != nullptr);
-        ui_->setupUi(this);
-
-        setWindowIcon(QIcon(":/images/window.icon"));
-
-#ifdef TODO
-        //TODO Complete me.
-//        catalogView_ = new CatalogView(this);
-//        libraryView_ = new LibraryView(this);
-#endif
-        if (systemTrayIcon_ == nullptr)
-        {
-            systemTrayIcon_ = new QSystemTrayIcon(QIcon(":/images/tray.icon"), this);
-            systemTrayIcon_->setContextMenu(nullptr); //FIXME Set correct context menu.
-            systemTrayIcon_->show();
-        }
+        initializeUserInterface();
+        initializeContentViews();
+        initializeSystemTrayIcon();
     }
-/*
-        window.setupSizeGrip();
-        layout.addWidget(libraryView_);
-        window.sizeGrip->show();
-        window.onWidgetChange(libraryView_);
-        window.move(QApplication::desktop()->screen(QApplication::desktop()->screenNumber(&window))->rect().center() - window.rect().center());
-*/
     QMainWindow::showEvent(event);
 }
 /*!
@@ -77,4 +107,12 @@ void Window::closeEvent(QCloseEvent* const event)
     hide();
 #endif
     QMainWindow::closeEvent(event);
+}
+/*!
+ * \brief Handles the signal emitted when views are changed.
+ */
+void Window::onViewChanged(AbstractView& view)
+{
+    //TODO Implement me.
+    Q_UNUSED(view);
 }

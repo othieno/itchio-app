@@ -1,4 +1,5 @@
 #include "application.h"
+#include <QDebug>
 #include <QFile>
 #include <QTextStream>
 #include <QStandardPaths>

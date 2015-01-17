@@ -8,11 +8,21 @@ before_install:
    - sudo apt-get update -qq
 install:
    - sudo apt-get install -qq g++-4.9 qt5-default qttools5-dev-tools qt5-qmake qtbase5-dev libsqlite3-dev
-   - export CXX="g++-4.9"
+   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
 before_script:
-   - qmake -qt=5
+   - qmake --version
 script:
-   - make
+   # Travis-CI's Ubuntu installation has a qmake with its own agenda, so these steps are necessary to build
+   # the required makefiles... The simpler command would be, e.g. 'qmake -makefile -Wall itchio.pro -o build/Makefile.itchio'
+   # but for some reason, this will write to build/build/Makefile.itchio instead of build/Makefile.itchio.
+   - mkdir -p build
+   - cd build
+   - qtchooser -qt=5 -run-tool=qmake -Wall ../itchio.pro -o Makefile.itchio
+   - qtchooser -qt=5 -run-tool=qmake -Wall ../test/unit/unit.pro -o Makefile.itchio-testsuite
+   - cd ..
+
+   # Build and execute the testsuite.
+   - make run-tests
 branches:
    only:
       - experimental
