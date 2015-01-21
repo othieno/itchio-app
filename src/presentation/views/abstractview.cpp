@@ -10,11 +10,11 @@ AbstractView::AbstractView(QWidget& parent) :
 QWidget(&parent)
 {}
 /*!
- * \brief Returns the view's full title, i.e. the application name appended to the view's caption.
+ * \brief Returns the view's full title, i.e. the application name appended to the view's window title.
  */
-QString AbstractView::title() const
+QString AbstractView::fullWindowTitle() const
 {
-    return QString("%1 - %2").arg(caption(), QCoreApplication::applicationName());
+    return QString("%1 - %2").arg(windowTitle(), QCoreApplication::applicationName());
 }
 /*!
  * \brief Returns true if this view is resizable, false otherwise.

@@ -5,6 +5,8 @@
 //FIXME There is a bug when the window snaps to the desktop. The resize buttons should change
 //      state but this doesn't happen. PS. Is this really a bug or more of a missing feature?
 
+//FIXME There is a bug that unmaximizes (and minimizes) the window when the minimize button is pressed.
+
 using itchio::Titlebar;
 
 /*

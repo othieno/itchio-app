@@ -11,10 +11,3 @@ AbstractView(parent)
     ui_.setupUi(this);
     Q_UNUSED(application);
 }
-/*!
- * \brief Returns the view's caption.
- */
-QString LibraryView::caption() const
-{
-    return "Library";
-}

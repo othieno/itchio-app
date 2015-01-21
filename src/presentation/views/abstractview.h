@@ -8,8 +8,7 @@ namespace itchio {
 class AbstractView : public QWidget
 {
 public:
-    QString title() const;
-    virtual QString caption() const = 0;
+    QString fullWindowTitle() const;
 
     virtual bool isResizable() const;
     virtual bool isCentered() const;

@@ -77,7 +77,7 @@ void Window::initializeContentViews()
         })
         {
             if (view != nullptr)
-                parent.addTab(view, view->caption());
+                parent.addTab(view, view->windowTitle());
         }
         // Select the LibraryView by default.
         parent.setCurrentIndex(1);
@@ -131,5 +131,5 @@ void Window::closeEvent(QCloseEvent* const event)
  */
 void Window::onViewChanged(AbstractView& view)
 {
-    setWindowTitle(view.title());
+    setWindowTitle(view.fullWindowTitle());
 }

@@ -42,13 +42,6 @@ doApiKeyAuthentication_(false)
     }
 }
 /*!
- * \brief Returns the view's caption.
- */
-QString AuthenticationView::caption() const
-{
-    return "Authentication";
-}
-/*!
  * \brief Disables the view's input components if \a disable is set to true.
  */
 void AuthenticationView::disableInputComponents(const bool disable)

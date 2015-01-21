@@ -3,6 +3,7 @@
 #include "titlebar.h"
 #include "application.h"
 #include "authenticationview.h"
+#include "settingsview.h"
 
 using itchio::ModalDialog;
 using itchio::AbstractView;
@@ -76,6 +77,9 @@ void ModalDialog::setView(const ModalDialog::View& view, Application& applicatio
             case ModalDialog::View::Authentication:
                 viewInstance = new AuthenticationView(*this, application);
                 break;
+            case ModalDialog::View::Settings:
+                viewInstance = new SettingsView(*this, application);
+                break;
             default:
                 break;
         }
@@ -85,7 +89,7 @@ void ModalDialog::setView(const ModalDialog::View& view, Application& applicatio
             // Move the view instance to the content frame so it's properly positioned in the GUI.
             layout->addWidget(viewInstance);
 
-            titlebar_->setTitle(viewInstance->title());
+            titlebar_->setTitle(viewInstance->fullWindowTitle());
             setResizable(viewInstance->isResizable());
 
             if (viewInstance->isCentered())

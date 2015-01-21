@@ -6,21 +6,21 @@
 
 namespace itchio {
 
+class ModalDialog;
 class Application;
 class Authenticator;
-class ModalDialog;
 class Settings;
 
 class AuthenticationView Q_DECL_FINAL : public AbstractView
 {
     Q_OBJECT
+    friend class ModalDialog;
 public:
-    AuthenticationView(ModalDialog& dialog, Application& application);
 
-    QString caption() const Q_DECL_OVERRIDE;
     inline bool isResizable() const Q_DECL_OVERRIDE { return false; }
     inline bool isCentered() const Q_DECL_OVERRIDE { return true; }
 private:
+    AuthenticationView(ModalDialog& dialog, Application& application);
     void disableInputComponents(const bool disable = true);
 
     QString username() const;

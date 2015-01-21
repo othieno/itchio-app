@@ -12,8 +12,6 @@ class Application;
 class CatalogView : public AbstractView
 {
     friend class Window;
-public:
-    QString caption() const Q_DECL_OVERRIDE;
 private:
     CatalogView(QWidget& parent, Application& application);
 
