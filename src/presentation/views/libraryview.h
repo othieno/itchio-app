@@ -13,7 +13,7 @@ class LibraryView : public AbstractView
 {
     friend class Window;
 public:
-    QString title() const Q_DECL_OVERRIDE;
+    QString caption() const Q_DECL_OVERRIDE;
 private:
     LibraryView(QWidget& parent, Application& application);
 

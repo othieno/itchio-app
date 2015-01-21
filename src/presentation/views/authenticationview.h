@@ -2,15 +2,11 @@
 #define AUTHENTICATIONVIEW_H
 
 #include "abstractview.h"
-#include "ui_loginprompt.h"
-
-class QLabel;
-class QLineEdit;
-class QPushButton;
-namespace Ui { class LoginPromptView; } // TODO Change LoginPromptView to AuthenticationView.
+#include "ui_authenticationview.h"
 
 namespace itchio {
 
+class Application;
 class Authenticator;
 class ModalDialog;
 
@@ -18,9 +14,9 @@ class AuthenticationView Q_DECL_FINAL : public AbstractView
 {
     Q_OBJECT
 public:
-    AuthenticationView(ModalDialog& dialog, Authenticator& authenticator);
+    AuthenticationView(ModalDialog& dialog, Application& application);
 
-    inline QString title() const Q_DECL_OVERRIDE { return "Login"; }
+    QString caption() const Q_DECL_OVERRIDE;
     inline bool isResizable() const Q_DECL_OVERRIDE { return false; }
     inline bool isCentered() const Q_DECL_OVERRIDE { return true; }
 private:
@@ -31,7 +27,7 @@ private:
 
     void setStatusMessage(const QString& message) const;
 
-    Ui::LoginPromptView ui_;
+    Ui::AuthenticationView ui_;
     Authenticator& authenticator_;
 private slots:
     void onInputChanged();

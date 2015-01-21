@@ -1,5 +1,8 @@
 #include "window.h"
 #include "ui_window.h"
+#include <QPushButton>
+#include "titlebar.h"
+#include "application.h"
 #include "catalogview.h"
 #include "libraryview.h"
 
@@ -12,25 +15,27 @@ Window::Window(Application& application) :
 QMainWindow(nullptr, Qt::CustomizeWindowHint | Qt::FramelessWindowHint),
 application_(application),
 ui_(nullptr),
-systemTrayIcon_(QIcon(":/images/tray.icon"))
+titlebar_(nullptr),
+systemTrayIcon_(QIcon(":/icon/system-tray"))
 {
-    setWindowIcon(QIcon(":/images/window.icon"));
+    setWindowIcon(QIcon(":/icon/window"));
 }
 /*!
  * \brief Destroys the Window instance.
  */
 Window::~Window()
 {
+    // Note that titlebar_ is a child to another QObject child so it's memory cleanup is handled by Qt.
     if (ui_ != nullptr)
         delete ui_;
 }
 /*!
- * \brief Displays the modal dialog with the specified \a identifier.
+ * \brief Displays the modal dialog with the specified \a view.
  * Returns true if the dialog was accepted, false otherwise.
  */
-bool Window::openModalDialog(const ModalDialog::Identifier& identifier)
+bool Window::openModalDialog(const ModalDialog::View& view)
 {
-    return ModalDialog(identifier, application_).exec() == QDialog::Accepted;
+    return ModalDialog(view, application_).exec() == QDialog::Accepted;
 }
 /*!
  * \brief Initializes the content views.
@@ -38,23 +43,26 @@ bool Window::openModalDialog(const ModalDialog::Identifier& identifier)
 void Window::initializeUserInterface()
 {
     ui_ = new Ui::Window;
-    Q_ASSERT(ui_ != nullptr);
-    ui_->setupUi(this);
+    titlebar_ = new Titlebar(*this);
 
-    connect(ui_->settingsButton, &QPushButton::clicked, [this]
-    {
-        openModalDialog(ModalDialog::Identifier::Settings);
-    });
+    Q_ASSERT(ui_ != nullptr);
+    Q_ASSERT(titlebar_ != nullptr);
+
+    ui_->setupUi(this);
+    ui_->titlebarFrameLayout->addWidget(titlebar_);
+
+    connect(titlebar_->settingsButton(), &QPushButton::clicked, [this](){ openModalDialog(ModalDialog::View::Settings); });
+    titlebar_->setTitle(application_.organizationDomain());
 }
 /*!
  * \brief Initializes the content views.
  */
 void Window::initializeContentViews()
 {
+    auto& parent = *ui_->centralWidgetContent;
+
     if (ui_ != nullptr && ui_->centralWidgetContent != nullptr)
     {
-        auto& parent = *ui_->centralWidgetContent;
-
         connect(&parent, &QTabWidget::currentChanged, [this, &parent]
         {
             auto* const currentView = parent.currentWidget();
@@ -69,7 +77,7 @@ void Window::initializeContentViews()
         })
         {
             if (view != nullptr)
-                parent.addTab(view, view->title());
+                parent.addTab(view, view->caption());
         }
         // Select the LibraryView by default.
         parent.setCurrentIndex(1);
@@ -98,6 +106,16 @@ void Window::showEvent(QShowEvent* const event)
     QMainWindow::showEvent(event);
 }
 /*!
+ * \brief Handles a window's change \a event, more specifically the window state change event.
+ */
+void Window::changeEvent(QEvent* const event)
+{
+    if (titlebar_ != nullptr && event != nullptr && event->type() == QEvent::WindowStateChange)
+        titlebar_->onWindowStateChanged();
+
+    QMainWindow::changeEvent(event);
+}
+/*!
  * \brief Handles the window's close \a event.
  */
 void Window::closeEvent(QCloseEvent* const event)
@@ -113,6 +131,5 @@ void Window::closeEvent(QCloseEvent* const event)
  */
 void Window::onViewChanged(AbstractView& view)
 {
-    //TODO Implement me.
-    Q_UNUSED(view);
+    setWindowTitle(view.title());
 }

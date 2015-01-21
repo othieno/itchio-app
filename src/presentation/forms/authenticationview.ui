@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AuthenticationView</class>
+ <widget class="QWidget" name="AuthenticationView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>469</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Login</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">*
+{
+	color:#888;
+	font:400 11pt &quot;Lato&quot;;
+	background:#333;
+}
+QLineEdit,
+QPushButton
+{
+	height:2em;
+}
+QLineEdit
+{
+	padding:0.25em 0;
+}
+QLineEdit:focus
+{
+	color:#FFF;
+}
+QPushButton
+{
+	margin:0.25em 0;
+	padding:0.25em 0;
+	text-transform:uppercase;
+	border:0;
+	border-radius:2px;
+	color:#FA5C5C;
+	background:#444;
+/*
+	color:#FFF;
+	color:#888;
+	background:#FA5C5C;
+*/
+	font-weight:900;
+}
+QPushButton:!enabled
+{
+	color:#888;
+/*
+	color:#FA5C5C;
+	background:#444;
+*/
+}
+QPushButton:hover
+{
+	color:#FFF;
+	background:#E94B4B;
+	color:#333;
+	background:#FA5C5C;
+}
+#statusMessage
+{
+	font-size:9pt;
+}
+</string>
+  </property>
+  <layout class="QVBoxLayout" name="authenticationViewLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>16</number>
+   </property>
+   <property name="topMargin">
+    <number>16</number>
+   </property>
+   <property name="rightMargin">
+    <number>16</number>
+   </property>
+   <property name="bottomMargin">
+    <number>16</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" name="iconLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <spacer name="iconLayoutLeftSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="icon">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="../../../res/resources.qrc">:/icon/window</pixmap>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="iconLayoutRightSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="usernameInput">
+     <property name="maxLength">
+      <number>256</number>
+     </property>
+     <property name="frame">
+      <bool>false</bool>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Normal</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>Username</string>
+     </property>
+     <property name="cursorMoveStyle">
+      <enum>Qt::LogicalMoveStyle</enum>
+     </property>
+     <property name="clearButtonEnabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="inputSeparator">
+     <property name="contextMenuPolicy">
+      <enum>Qt::NoContextMenu</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="lineWidth">
+      <number>1</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="passwordInput">
+     <property name="maxLength">
+      <number>256</number>
+     </property>
+     <property name="frame">
+      <bool>false</bool>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>Password</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="rememberUserCheckbox">
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::DefaultContextMenu</enum>
+     </property>
+     <property name="text">
+      <string>Remember me</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="changeUserButton">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Change User</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="loginButton">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>Login</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="offlineLoginButton">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="text">
+      <string>Offline Mode</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="statusLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>8</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <spacer name="statusLayoutLeftSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="statusMessage">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="font">
+        <font>
+         <family>Lato</family>
+         <pointsize>9</pointsize>
+         <weight>50</weight>
+         <italic>false</italic>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="statusLayoutRightSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../../res/resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

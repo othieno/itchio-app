@@ -8,8 +8,8 @@ INCLUDEPATH += \
     src/logic/manager \
     src/persistence \
     src/persistence/dao \
-    src/presentation \
     src/presentation/controllers \
+    src/presentation/ui \
     src/presentation/views
 
 HEADERS += \
@@ -24,15 +24,16 @@ HEADERS += \
     src/logic/manager/contentmanager.h \
     src/logic/manager/networkmanager.h \
     src/logic/manager/manager.h \
+    src/persistence/database.h \
     src/persistence/databasemanager.h \
     src/persistence/dao/abstractdao.h \
     src/persistence/dao/gamedao.h \
-    src/presentation/window.h \
     src/presentation/controllers/abstractcontroller.h \
-    src/persistence/database.h \
+    src/presentation/ui/modaldialog.h \
+    src/presentation/ui/titlebar.h \
+    src/presentation/ui/window.h \
     src/presentation/views/abstractview.h \
     src/presentation/views/authenticationview.h \
-    src/presentation/modaldialog.h \
     src/presentation/views/libraryview.h \
     src/presentation/views/catalogview.h
 
@@ -41,32 +42,33 @@ SOURCES += \
     src/logic/application.cpp \
     src/logic/authenticator.cpp \
     src/logic/settings.cpp \
-    src/persistence/databasemanager.cpp \
-    src/presentation/window.cpp \
     src/logic/domain/game.cpp \
     src/logic/domain/library.cpp \
     src/logic/domain/purchase.cpp \
     src/logic/domain/user.cpp \
     src/logic/manager/contentmanager.cpp \
     src/logic/manager/networkmanager.cpp \
-    src/persistence/dao/gamedao.cpp \
-    src/presentation/controllers/abstractcontroller.cpp \
     src/logic/manager/manager.cpp \
     src/persistence/database.cpp \
+    src/persistence/databasemanager.cpp \
+    src/persistence/dao/gamedao.cpp \
+    src/presentation/controllers/abstractcontroller.cpp \
     src/presentation/views/abstractview.cpp \
     src/presentation/views/authenticationview.cpp \
-    src/presentation/modaldialog.cpp \
     src/presentation/views/libraryview.cpp \
-    src/presentation/views/catalogview.cpp
+    src/presentation/views/catalogview.cpp \
+    src/presentation/ui/modaldialog.cpp \
+    src/presentation/ui/titlebar.cpp \
+    src/presentation/ui/window.cpp
 
 FORMS += \
-    src/presentation/forms/modalwindow.ui \
-    src/presentation/forms/secondarywindow.ui \
-    src/presentation/forms/settingswidget.ui \
-    src/presentation/forms/loginprompt.ui \
-    src/presentation/forms/window.ui \
+    src/presentation/forms/authenticationview.ui \
     src/presentation/forms/catalogview.ui \
-    src/presentation/forms/libraryview.ui
+    src/presentation/forms/libraryview.ui \
+    src/presentation/forms/modaldialog.ui \
+    src/presentation/forms/settingswidget.ui \
+    src/presentation/forms/titlebar.ui \
+    src/presentation/forms/window.ui
 
 RESOURCES += \
     res/resources.qrc

@@ -56,6 +56,7 @@ private:
     ContentManager contentManager_;
 private slots:
     void onUserSessionCreated(const User& user);
+    void onAboutToQuit();
 };
 
 } // namespace itchio

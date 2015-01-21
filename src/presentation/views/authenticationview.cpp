@@ -1,15 +1,22 @@
 #include "authenticationview.h"
-#include "ui_loginprompt.h"
 #include "modaldialog.h"
-#include "authenticator.h"
+#include "application.h"
 
 using itchio::AuthenticationView;
 
-AuthenticationView::AuthenticationView(ModalDialog& dialog, Authenticator& authenticator) :
-AbstractView(&dialog),
-authenticator_(authenticator)
+AuthenticationView::AuthenticationView(ModalDialog& dialog, Application& application) :
+AbstractView(dialog),
+authenticator_(application.authenticator())
 {
     ui_.setupUi(this);
+
+
+    //TODO Implement these.
+    ui_.changeUserButton->hide();
+    ui_.offlineLoginButton->hide();
+    ui_.rememberUserCheckbox->hide();
+
+
 
     connect(ui_.loginButton,   &QPushButton::clicked,   this, &AuthenticationView::onLoginButtonClicked);
     connect(ui_.usernameInput, &QLineEdit::textChanged, this, &AuthenticationView::onInputChanged);
@@ -20,6 +27,13 @@ authenticator_(authenticator)
 
     // Disable the login button. It is only enabled if user input is valid.
     ui_.loginButton->setEnabled(false);
+}
+/*!
+ * \brief Returns the view's caption.
+ */
+QString AuthenticationView::caption() const
+{
+    return "Login";
 }
 /*!
  * \brief Disables the view's input components if \a disable is set to true.
@@ -57,7 +71,7 @@ QString AuthenticationView::password() const
  */
 void AuthenticationView::setStatusMessage(const QString& message) const
 {
-    return ui_.loginStatus->setText(message);
+    return ui_.statusMessage->setText(message);
 }
 /*!
  * \brief Validates user input and enables/disables the login button depending on the correctness of said input.

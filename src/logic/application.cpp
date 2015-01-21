@@ -1,9 +1,9 @@
 #include "application.h"
-#include <QDebug>
 #include <QFile>
 #include <QTextStream>
 #include <QStandardPaths>
 #include <QDir>
+#include <QFontDatabase>
 
 using itchio::Application;
 using itchio::Settings;
@@ -25,9 +25,10 @@ networkManager_(*this),
 authenticator_(*this),
 contentManager_(*this)
 {
+    connect(this, &Application::aboutToQuit, this, &Application::onAboutToQuit);
     connect(&authenticator_, &Authenticator::authenticated, this, &Application::onUserSessionCreated);
 
-//    setApplicationStyle();
+    setApplicationStyle();
     networkManager_.initialize();
 }
 /*!
@@ -35,7 +36,7 @@ contentManager_(*this)
  */
 bool Application::openAuthenticationDialog()
 {
-    return window_.openModalDialog(ModalDialog::Identifier::Authentication);
+    return window_.openModalDialog(ModalDialog::View::Authentication);
 }
 /*!
  * \brief Returns the application's settings.
@@ -174,6 +175,9 @@ void Application::restart()
  */
 void Application::setApplicationStyle()
 {
+    QFontDatabase::addApplicationFont(":/font/Lato");
+
+/*
     QFile file(":/qss/itchio.qss");
     if (file.open(QIODevice::ReadOnly))
     {
@@ -182,6 +186,7 @@ void Application::setApplicationStyle()
     }
     else
         qWarning() << "[Application] WARN: Could not load default stylesheet!";
+*/
 }
 /*!
  * \brief Initializes the content manager with the specified \a user.
@@ -196,4 +201,11 @@ void Application::onUserSessionCreated(const User& user)
 
     contentManager_.setUser(user);
     window_.showMaximized();
+}
+/*!
+ * \brief Performs last-second operations before the application quits.
+ */
+void Application::onAboutToQuit()
+{
+    //TODO Implement me.
 }

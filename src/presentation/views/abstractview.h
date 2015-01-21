@@ -8,11 +8,13 @@ namespace itchio {
 class AbstractView : public QWidget
 {
 public:
-    virtual QString title() const = 0;
+    QString title() const;
+    virtual QString caption() const = 0;
+
     virtual bool isResizable() const;
     virtual bool isCentered() const;
 protected:
-    explicit AbstractView(QWidget* const parent);
+    explicit AbstractView(QWidget& parent);
 };
 
 } // namespace itchio

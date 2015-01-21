@@ -11,22 +11,50 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string/>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">*
+{
+	color:#FFF;
+	font-family:&quot;Lato&quot;;
+}
+
+#centralWidget
+{
+	border:none;
+	/*background:#7A6B6E;*/
+	background:#333;
+}
+
+#centralWidgetContent
+{
+}
+	#centralWidgetContent &gt; QTabBar
+	{
+		border:none;
+		font-size:14pt;
+	}
+		QTabWidget#centralWidgetContent &gt; QTabBar::tab
+		{
+			border:none;
+			color:#888;
+			margin:0 0.5em 0.5em 0.5em;
+			/*text-transform:uppercase;*/
+		}
+			QTabWidget#centralWidgetContent &gt; QTabBar::tab:selected
+			{
+				color:#FFF;
+			}</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="contextMenuPolicy">
     <enum>Qt::NoContextMenu</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">#centralWidget
-{
-	border:none;
-	margin:0;
-	padding:0;
-	background:#222;
-}</string>
+    <string notr="true"/>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="centralWidgetLayout">
     <property name="spacing">
      <number>0</number>
     </property>
@@ -43,15 +71,9 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QFrame" name="titlebar">
+     <widget class="QFrame" name="titlebarFrame">
       <property name="contextMenuPolicy">
-       <enum>Qt::DefaultContextMenu</enum>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">#titlebar
-{
-	background:#222;
-}</string>
+       <enum>Qt::NoContextMenu</enum>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -62,7 +84,7 @@
       <property name="lineWidth">
        <number>0</number>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="titlebarFrameLayout">
        <property name="spacing">
         <number>0</number>
        </property>
@@ -78,72 +100,6 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item>
-        <widget class="QLabel" name="windowTitle">
-         <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <property name="contextMenuPolicy">
-          <enum>Qt::NoContextMenu</enum>
-         </property>
-         <property name="lineWidth">
-          <number>0</number>
-         </property>
-         <property name="text">
-          <string>WindowTitle</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::PlainText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="settingsButton">
-         <property name="text">
-          <string>Settings</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="titlebarSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>65</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="minimzeButton">
-         <property name="text">
-          <string>_</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="maximizeButton">
-         <property name="text">
-          <string>o</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="closeButton">
-         <property name="text">
-          <string>x</string>
-         </property>
-         <property name="autoDefault">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
     </item>
@@ -154,7 +110,7 @@
       </property>
       <property name="font">
        <font>
-        <pointsize>14</pointsize>
+        <family>Lato</family>
        </font>
       </property>
       <property name="cursor">
@@ -170,18 +126,7 @@
        <enum>Qt::NoContextMenu</enum>
       </property>
       <property name="styleSheet">
-       <string notr="true">QTabBar::tab
-{
-	color:#888;
-	background:#222;
-	border-bottom-color:red;
-	/*text-transform:uppercase;*/
-	margin:0.5em;
-}
-QTabBar::tab:selected
-{
-	color:#FFF;
-}</string>
+       <string notr="true"/>
       </property>
       <property name="tabPosition">
        <enum>QTabWidget::North</enum>
@@ -206,10 +151,7 @@ QTabBar::tab:selected
     <item>
      <widget class="QFrame" name="footer">
       <property name="styleSheet">
-       <string notr="true">#footer
-{
-	background:#222;
-}</string>
+       <string notr="true"/>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -244,7 +186,7 @@ QTabBar::tab:selected
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer">
+        <spacer name="footerSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -259,7 +201,7 @@ QTabBar::tab:selected
        <item>
         <widget class="QLabel" name="networkOperationModeLabel">
          <property name="text">
-          <string>Online</string>
+          <string>Network Status</string>
          </property>
         </widget>
        </item>

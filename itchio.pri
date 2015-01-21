@@ -20,6 +20,9 @@ UI_DIR       = $$DESTDIR/ui
 CONFIG *= c++11
 QMAKE_CXXFLAGS *= -g -Wall -Wextra -Werror -pedantic-errors -ansi
 
+# Change to the clang compiler (for debug purposes).
+#QMAKE_CXX = clang++-3.6
+
 # Turn on debugging to enable features that are disabled when the QT_NO_DEBUG is set, e.g. Q_ASSERT.
 CONFIG *= debug
 
