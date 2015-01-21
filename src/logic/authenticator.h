@@ -15,8 +15,7 @@ class Authenticator Q_DECL_FINAL : public AbstractController
     Q_OBJECT
     friend class Application;
 public:
-    void authenticate(const QString& username, const QString& password);
-    void authenticate(const QString& key);
+    void authenticate(const QString& username, const QString& password, const bool passwordIsApiKey = false);
 private:
     explicit Authenticator(Application& application);
 

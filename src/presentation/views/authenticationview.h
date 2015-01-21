@@ -9,6 +9,7 @@ namespace itchio {
 class Application;
 class Authenticator;
 class ModalDialog;
+class Settings;
 
 class AuthenticationView Q_DECL_FINAL : public AbstractView
 {
@@ -29,6 +30,9 @@ private:
 
     Ui::AuthenticationView ui_;
     Authenticator& authenticator_;
+    const Settings& settings_;
+
+    bool doApiKeyAuthentication_;
 private slots:
     void onInputChanged();
     void onLoginButtonClicked();

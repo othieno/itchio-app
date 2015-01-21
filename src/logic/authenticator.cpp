@@ -8,6 +8,9 @@
 
 using itchio::Authenticator;
 
+/*!
+ * \brief Instantiates an Authenticator that is attached to the specified \a application.
+ */
 Authenticator::Authenticator(Application& application) :
 AbstractController(application),
 networkManager_(application.networkManager())
@@ -16,20 +19,18 @@ networkManager_(application.networkManager())
 }
 /*!
  * \brief Authenticates a \a username and \a password pair.
+ * If \a passwordIsApiKey is set to true, then \a password is assumed to be the user's API key.
  */
-void Authenticator::authenticate(const QString& username, const QString& password)
+void Authenticator::authenticate(const QString& username, const QString& password, const bool passwordIsApiKey)
 {
     currentUsername_ = username;
 
     // Upon completion, the NetworkManager emits a 'receivedUserAuthentication'
     // signal which is handled by the 'onReceivedUserAuthentication' slot.
-    networkManager_.requestUserAuthentication(username, password);
-}
-
-
-void Authenticator::authenticate(const QString&)
-{
-    //TODO Implement me.
+    if (passwordIsApiKey)
+        emit authenticationFailed("Implement API Key authentication.");
+    else
+        networkManager_.requestUserAuthentication(username, password);
 }
 
 

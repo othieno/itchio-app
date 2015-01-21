@@ -227,7 +227,7 @@ QPushButton:hover
       <bool>true</bool>
      </property>
      <property name="text">
-      <string>Login</string>
+      <string>Authenticate</string>
      </property>
     </widget>
    </item>
