@@ -1,8 +1,9 @@
 #include "titlebar.h"
 #include "ui_titlebar.h"
+#include <QMouseEvent>
 
 //FIXME There is a bug when the window snaps to the desktop. The resize buttons should change
-//      state but this doesn't happen.
+//      state but this doesn't happen. PS. Is this really a bug or more of a missing feature?
 
 using itchio::Titlebar;
 
@@ -15,7 +16,8 @@ parent_(parent),
 ui_(new Ui::Titlebar),
 showResizeButtons_(true),
 showUnmaximizeButton_(false),
-showMaximizeButton_(false)
+showMaximizeButton_(false),
+requestTitlebarMove_(false)
 {
     Q_ASSERT(ui_ != nullptr);
     ui_->setupUi(this);
@@ -81,4 +83,41 @@ void Titlebar::showResizeButtons(const bool show)
 {
     showResizeButtons_ = show;
     onWindowStateChanged();
+}
+/*!
+ * \brief Handles the Titlebar's mouse press \a event.
+ */
+void Titlebar::mousePressEvent(QMouseEvent* const event)
+{
+    if (event->button() == Qt::MiddleButton)
+        parent_.showMinimized();
+    else
+    {
+        requestTitlebarMove_ = true;
+        oldMousePosition_ = event->pos();
+        QApplication::setOverrideCursor(QCursor(Qt::ClosedHandCursor));
+    }
+    QWidget::mousePressEvent(event);
+}
+/*!
+ * \brief Handles the Titlebar's mouse release \a event.
+ */
+void Titlebar::mouseReleaseEvent(QMouseEvent* const event)
+{
+    if (requestTitlebarMove_)
+    {
+        requestTitlebarMove_ = false;
+        QApplication::restoreOverrideCursor();
+    }
+    QWidget::mouseReleaseEvent(event);
+}
+/*!
+ * \brief Handles the Titlebar's mouse movement \a event.
+ */
+void Titlebar::mouseMoveEvent(QMouseEvent* const event)
+{
+    if (requestTitlebarMove_)
+        parent_.move(event->globalPos() - oldMousePosition_);
+
+    QWidget::mouseMoveEvent(event);
 }

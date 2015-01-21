@@ -23,6 +23,10 @@ public:
     void showMinimizeButton(const bool show = true);
     void showResizeButtons(const bool show = true);
 private:
+    void mousePressEvent(QMouseEvent* const event) Q_DECL_OVERRIDE;
+    void mouseReleaseEvent(QMouseEvent* const event) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QMouseEvent* const event) Q_DECL_OVERRIDE;
+
     QWidget& parent_;
 
     Ui::Titlebar* const ui_;
@@ -30,6 +34,9 @@ private:
     bool showResizeButtons_;
     bool showUnmaximizeButton_;
     bool showMaximizeButton_;
+
+    bool requestTitlebarMove_;
+    QPoint oldMousePosition_;
 };
 
 } // namespace itchio
