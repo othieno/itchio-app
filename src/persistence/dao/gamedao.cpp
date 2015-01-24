@@ -46,7 +46,7 @@ void GameDAO::dropTables()
 /*!
  * \brief Populates tables with mock data.
  */
-void GameDAO::populateTables()
+void GameDAO::insertMockRecords()
 {
     const auto& titles  = std::array<QString, 5>{"Hurricane","Metro","Asimov","Pelagic","Hurricane X"};
     const auto& authors = std::array<QString, 5>{"Me","Him","Her","Them","Me"};
@@ -54,7 +54,7 @@ void GameDAO::populateTables()
     Game g;
     for (unsigned i = 0; i < titles.size(); ++i)
     {
-        g.identifier = i;
+        g.identifier = i + 1000;
         g.title = titles[i];
         g.author = authors[i];
 

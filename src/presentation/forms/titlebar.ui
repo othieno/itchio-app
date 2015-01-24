@@ -17,18 +17,7 @@
    <string/>
   </property>
   <property name="styleSheet">
-   <string notr="true">*
-{
-	color:#FFF;
-	background:#222;
-	border:0;
-}
-#title
-{
-	font:700 9pt &quot;Lato&quot;;
-	margin:0 0.15em;
-}
-</string>
+   <string notr="true"/>
   </property>
   <layout class="QHBoxLayout" name="titlebarLayout">
    <property name="spacing">

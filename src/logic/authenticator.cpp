@@ -23,6 +23,17 @@ networkManager_(application.networkManager())
  */
 void Authenticator::authenticate(const QString& username, const QString& password, const bool passwordIsApiKey)
 {
+    //TODO Remove this block when done debugging.
+    {
+        User u;
+        u.identifier = 0;
+        u.username = "root";
+        u.key = "TheQuickBrownFoxJumpsOverTheLazyDog";
+        emit authenticated(u);
+        return;
+    }
+
+
     currentUsername_ = username;
 
     // Upon completion, the NetworkManager emits a 'receivedUserAuthentication'

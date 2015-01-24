@@ -14,6 +14,18 @@ class AbstractDAO
 {
 public:
     /*!
+     * Creates the database tables used by this data access object.
+     */
+    virtual void createTables() = 0;
+    /*!
+     * Drops all database tables used by this data access object.
+     */
+    virtual void dropTables() = 0;
+    /*!
+     * Populates the database with mock data.
+     */
+    virtual void insertMockRecords() = 0;
+    /*!
      * Adds the \a entry to the database if it doesn't exist, or updates it otherwise.
      */
     virtual void save(const Entry& entry) = 0;
@@ -36,18 +48,6 @@ protected:
     explicit AbstractDAO(Database& database) :
     database_(database)
     {}
-    /*!
-     * Creates the database tables used by this data access object.
-     */
-    virtual void createTables() = 0;
-    /*!
-     * Drops all the database tables used by this data access object.
-     */
-    virtual void dropTables() = 0;
-    /*!
-     * Populates the database.
-     */
-    virtual void populateTables() = 0;
     /*!
      * Converts the result of an SQL query into the Entry type.
      */

@@ -14,10 +14,7 @@
    <string/>
   </property>
   <property name="styleSheet">
-   <string notr="true">#ModalDialog
-{
-	background:#333;
-}</string>
+   <string notr="true"/>
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>

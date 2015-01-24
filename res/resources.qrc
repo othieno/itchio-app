@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/qss">
-        <file alias="itchio">qss/itchio.qss</file>
+        <file alias="default">qss/itchio.qss</file>
     </qresource>
     <qresource prefix="/icon">
         <file alias="window">images/itchio-icon-200.png</file>
@@ -13,5 +13,6 @@
     </qresource>
     <qresource prefix="/font">
         <file alias="Lato">fonts/Lato/Lato-Regular.ttf</file>
+        <file alias="Raleway">fonts/Raleway/Raleway-Thin.ttf</file>
     </qresource>
 </RCC>

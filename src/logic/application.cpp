@@ -171,22 +171,25 @@ void Application::restart()
     exit(Application::RESTART_ON_EXIT_CODE);
 }
 /*!
- * \brief Sets the application's style which includes stylesheets and fonts.
+ * \brief Sets the application's style which includes fonts and stylesheets.
  */
 void Application::setApplicationStyle()
 {
     QFontDatabase::addApplicationFont(":/font/Lato");
+    QFontDatabase::addApplicationFont(":/font/Raleway");
 
-/*
-    QFile file(":/qss/itchio.qss");
-    if (file.open(QIODevice::ReadOnly))
+    // Set the default stylesheet if none was already specified in the command line arguments.
+    if (styleSheet().isEmpty())
     {
-        setStyleSheet(QTextStream(&file).readAll());
-        file.close();
+        QFile file(":/qss/default");
+        if (file.open(QIODevice::ReadOnly))
+        {
+            setStyleSheet(QTextStream(&file).readAll());
+            file.close();
+        }
+        else
+            qWarning() << "[Application] WARN: Could not load the default stylesheet!";
     }
-    else
-        qWarning() << "[Application] WARN: Could not load default stylesheet!";
-*/
 }
 /*!
  * \brief Initializes the content manager with the specified \a user.

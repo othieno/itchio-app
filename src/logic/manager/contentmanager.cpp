@@ -5,6 +5,7 @@
 #include "window.h"
 #include "gamedao.h"
 #include <QDir>
+#include <QSqlQuery>
 
 using itchio::ContentManager;
 using itchio::GameDAO;
@@ -14,7 +15,8 @@ using itchio::User;
  * \brief Instantiates a ContentManager that is attached to the specified \a application.
  */
 ContentManager::ContentManager(Application& application) :
-Manager(application)
+Manager(application),
+gameDAO_(contentDatabase_)
 {
     connect(&autoUpdateTimer_, &QTimer::timeout, this, &ContentManager::updateUserContent);
 
@@ -36,17 +38,20 @@ void ContentManager::setUser(const User& user)
     user_ = user;
 
     // Close the previous user's database.
-    if (userDatabase_.open())
-        userDatabase_.close();
+    if (contentDatabase_.open())
+        contentDatabase_.close();
 
     // Create the new user's database.
-    userDatabase_ = DatabaseManager::createDatabase(QString("%1.sqlite").arg(user_.identifier));
-    if (!userDatabase_.open())
+    contentDatabase_ = DatabaseManager::createDatabase(QString("%1.sqlite").arg(user_.identifier));
+    if (!contentDatabase_.open())
     {
-        userDatabase_ = DatabaseManager::createInMemoryDatabase();
-        if (!userDatabase_.open())
+        contentDatabase_ = DatabaseManager::createInMemoryDatabase();
+        if (!contentDatabase_.open())
             qFatal("[ContentManager] FATAL: Could not open user database.");
     }
+
+    // Create database tables (if they don't exist).
+    gameDAO_.createTables();
 
     // Update the user's content.
     updateUserContent();
@@ -86,10 +91,16 @@ void ContentManager::setAutoUpdateInterval(const int milliseconds)
 /*!
  * \brief Returns the Game data access object.
  */
+QSqlQuery ContentManager::executeDatabaseQuery(const QString& statement)
+{
+    return contentDatabase_.open() ? contentDatabase_.exec(statement) : QSqlQuery();
+}
+/*!
+ * \brief Returns the Game data access object.
+ */
 GameDAO& ContentManager::gameDAO()
 {
-    static GameDAO GAMEDAO_INSTANCE(userDatabase_);
-    return GAMEDAO_INSTANCE;
+    return gameDAO_;
 }
 /*!
  * \brief Returns the path to the directory where all cache data is stored.
@@ -103,6 +114,11 @@ QString ContentManager::cacheLocation()
  */
 void ContentManager::updateUserContent()
 {
+    gameDAO_.insertMockRecords();
+
+
+
+
     //TODO Implement me.
 
 
@@ -113,22 +129,9 @@ void ContentManager::updateUserContent()
     if (autoUpdateTimer_.isActive())
         autoUpdateTimer_.stop();
 
-
-
-    qDebug() << "Refreshing..." << user_.username << user_.identifier << user_.key;
-
-
-
-//    emit disconnected();
-
 //    if (autoUpdateTimer_.interval() > 0)
 //        autoUpdateTimer_.start();
 */
-
-
-
-
-
 }
 /*!
  * \brief Empties the cache directory.

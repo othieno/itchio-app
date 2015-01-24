@@ -14,38 +14,10 @@
    <string/>
   </property>
   <property name="styleSheet">
-   <string notr="true">*
-{
-	color:#FFF;
-	font-family:&quot;Lato&quot;;
-}
-
-#centralWidget
-{
-	border:none;
-	/*background:#7A6B6E;*/
-	background:#333;
-}
-
-#centralWidgetContent
-{
-}
-	#centralWidgetContent &gt; QTabBar
-	{
-		border:none;
-		font-size:14pt;
-	}
-		QTabWidget#centralWidgetContent &gt; QTabBar::tab
-		{
-			border:none;
-			color:#888;
-			margin:0 0.5em 0.5em 0.5em;
-			/*text-transform:uppercase;*/
-		}
-			QTabWidget#centralWidgetContent &gt; QTabBar::tab:selected
-			{
-				color:#FFF;
-			}</string>
+   <string notr="true"/>
+  </property>
+  <property name="animated">
+   <bool>true</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="contextMenuPolicy">
@@ -111,6 +83,10 @@
       <property name="font">
        <font>
         <family>Lato</family>
+        <pointsize>10</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
        </font>
       </property>
       <property name="cursor">
@@ -120,7 +96,7 @@
        <bool>false</bool>
       </property>
       <property name="focusPolicy">
-       <enum>Qt::ClickFocus</enum>
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="contextMenuPolicy">
        <enum>Qt::NoContextMenu</enum>
@@ -132,7 +108,7 @@
        <enum>QTabWidget::North</enum>
       </property>
       <property name="tabShape">
-       <enum>QTabWidget::Triangular</enum>
+       <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
        <number>-1</number>

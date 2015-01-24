@@ -11,6 +11,10 @@ class GameDAO Q_DECL_FINAL : public AbstractDAO<Game, unsigned int>
 public:
     explicit GameDAO(Database& database);
 
+    void createTables() Q_DECL_OVERRIDE;
+    void dropTables() Q_DECL_OVERRIDE;
+    void insertMockRecords() Q_DECL_OVERRIDE;
+
     void save(const Game& game) Q_DECL_OVERRIDE;
 
     Game get(const unsigned int& identifier) const Q_DECL_OVERRIDE;
@@ -25,10 +29,6 @@ public:
     QList<Game> getGamesByStatus(const Game::Status& status) const;
     QList<Game> getGamesByVisibility(const Game::Visibility& visibility) const;
 private:
-    void createTables() Q_DECL_OVERRIDE;
-    void dropTables() Q_DECL_OVERRIDE;
-    void populateTables() Q_DECL_OVERRIDE;
-
     Game toDomainObject(const QSqlQuery& query) const Q_DECL_OVERRIDE;
 
     static int toInteger(const QSet<Game::Genre>& genres);

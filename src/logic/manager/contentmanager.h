@@ -4,11 +4,10 @@
 #include "manager.h"
 #include "user.h"
 #include "database.h"
+#include "gamedao.h"
 #include <QTimer>
 
 namespace itchio {
-
-class GameDAO;
 
 class ContentManager Q_DECL_FINAL : public Manager
 {
@@ -25,6 +24,8 @@ public:
     int autoUpdateInterval() const;
     void setAutoUpdateInterval(const int milliseconds);
 
+    QSqlQuery executeDatabaseQuery(const QString& statement);
+
     GameDAO& gameDAO();
 
     static QString cacheLocation();
@@ -39,9 +40,11 @@ private:
     QTimer autoUpdateTimer_;
     User user_;
 
-    Database userDatabase_;
+    Database contentDatabase_;
+    GameDAO gameDAO_;
 signals:
-    void userContentUpdated();
+    void catalogUpdated();
+    void libraryUpdated();
     void cacheEmptied();
 };
 
