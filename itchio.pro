@@ -9,6 +9,7 @@ INCLUDEPATH += \
     src/persistence \
     src/persistence/dao \
     src/presentation/controllers \
+    src/presentation/models \
     src/presentation/ui \
     src/presentation/views
 
@@ -29,6 +30,7 @@ HEADERS += \
     src/persistence/dao/abstractdao.h \
     src/persistence/dao/gamedao.h \
     src/presentation/controllers/abstractcontroller.h \
+    src/presentation/models/librarymodel.h \
     src/presentation/ui/modaldialog.h \
     src/presentation/ui/titlebar.h \
     src/presentation/ui/window.h \
@@ -59,6 +61,7 @@ SOURCES += \
     src/presentation/views/catalogview.cpp \
     src/presentation/views/libraryview.cpp \
     src/presentation/views/settingsview.cpp \
+    src/presentation/models/librarymodel.cpp \
     src/presentation/ui/modaldialog.cpp \
     src/presentation/ui/titlebar.cpp \
     src/presentation/ui/window.cpp
