@@ -1,5 +1,7 @@
 #include "abstractview.h"
 #include "application.h"
+#include <QStyleOption>
+#include <QPainter>
 
 using itchio::AbstractView;
 
@@ -29,4 +31,18 @@ bool AbstractView::isResizable() const
 bool AbstractView::isCentered() const
 {
     return false;
+}
+/*!
+ * \brief Overwrites the paintEvent handler to enable custom widget stylsheets.
+ */
+void AbstractView::paintEvent(QPaintEvent *e)
+{
+    QStyleOption option;
+    option.init(this);
+
+    QPainter painter(this);
+
+    style()->drawPrimitive(QStyle::PE_Widget, &option, &painter, this);
+
+    QWidget::paintEvent(e);
 }

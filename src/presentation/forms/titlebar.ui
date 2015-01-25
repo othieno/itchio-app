@@ -47,7 +47,7 @@
       <enum>Qt::NoContextMenu</enum>
      </property>
      <property name="text">
-      <string>Title</string>
+      <string/>
      </property>
     </widget>
    </item>

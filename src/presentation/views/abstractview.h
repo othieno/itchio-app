@@ -14,6 +14,8 @@ public:
     virtual bool isCentered() const;
 protected:
     explicit AbstractView(QWidget& parent);
+
+    void paintEvent(QPaintEvent* const event) Q_DECL_OVERRIDE;
 };
 
 } // namespace itchio

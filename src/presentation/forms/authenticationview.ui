@@ -14,61 +14,7 @@
    <string>Authentication</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">*
-{
-	color:#888;
-	font:400 11pt &quot;Lato&quot;;
-	background:#333;
-}
-QLineEdit,
-QPushButton
-{
-	height:2em;
-}
-QLineEdit
-{
-	padding:0.25em 0;
-}
-QLineEdit:focus
-{
-	color:#FFF;
-}
-QPushButton
-{
-	margin:0.25em 0;
-	padding:0.25em 0;
-	text-transform:uppercase;
-	border:0;
-	border-radius:2px;
-	color:#FA5C5C;
-	background:#444;
-/*
-	color:#FFF;
-	color:#888;
-	background:#FA5C5C;
-*/
-	font-weight:900;
-}
-QPushButton:!enabled
-{
-	color:#888;
-/*
-	color:#FA5C5C;
-	background:#444;
-*/
-}
-QPushButton:hover
-{
-	color:#FFF;
-	background:#E94B4B;
-	color:#333;
-	background:#FA5C5C;
-}
-#statusMessage
-{
-	font-size:9pt;
-}
-</string>
+   <string notr="true"/>
   </property>
   <layout class="QVBoxLayout" name="authenticationViewLayout">
    <property name="spacing">
@@ -226,8 +172,23 @@ QPushButton:hover
      <property name="enabled">
       <bool>true</bool>
      </property>
+     <property name="focusPolicy">
+      <enum>Qt::TabFocus</enum>
+     </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::NoContextMenu</enum>
+     </property>
      <property name="text">
       <string>Authenticate</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+     <property name="default">
+      <bool>true</bool>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

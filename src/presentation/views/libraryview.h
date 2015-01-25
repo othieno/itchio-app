@@ -12,7 +12,7 @@ class Window;
 class Application;
 class ContentManager;
 
-class LibraryView : public AbstractView
+class LibraryView Q_DECL_FINAL : public AbstractView
 {
     friend class Window;
 public:

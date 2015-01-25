@@ -9,7 +9,7 @@ namespace itchio {
 class Window;
 class Application;
 
-class CatalogView : public AbstractView
+class CatalogView Q_DECL_FINAL : public AbstractView
 {
     friend class Window;
 private:

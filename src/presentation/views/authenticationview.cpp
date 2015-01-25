@@ -37,7 +37,6 @@ doApiKeyAuthentication_(false)
 
         ui_.usernameInput->setText(settings_.username());
         ui_.passwordInput->setText("PasswordPlaceholder");
-        ui_.loginButton->setText("Authenticate API Key");
         ui_.loginButton->setEnabled(true);
     }
 }
@@ -89,7 +88,11 @@ void AuthenticationView::onInputChanged()
     if (doApiKeyAuthentication_)
     {
         doApiKeyAuthentication_ = false;
-        ui_.loginButton->setText("Authenticate");
+        ui_.usernameInput->setText(QString());
+        ui_.passwordInput->setText(QString());
+
+        // Notify the user that API key authentication is disabled.
+        onAuthenticationFailed(tr("Discarding API key."));
     }
 
     //TODO Perform a more thorough validation.
@@ -102,7 +105,7 @@ void AuthenticationView::onInputChanged()
  */
 void AuthenticationView::onLoginButtonClicked()
 {
-    setStatusMessage("Authenticating ...");
+    setStatusMessage(tr("Authenticating ..."));
 
     // Disable all input components to prevent any interference during the authentication phase.
     disableInputComponents();
@@ -123,7 +126,6 @@ void AuthenticationView::onAuthenticationFailed(const QString& message)
     {
         doApiKeyAuthentication_ = false;
         ui_.passwordInput->setText(QString());
-        ui_.loginButton->setText("Authenticate");
         ui_.loginButton->setDisabled(true);
     }
 }

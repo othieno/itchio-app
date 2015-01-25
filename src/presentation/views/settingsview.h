@@ -9,7 +9,7 @@ namespace itchio {
 class ModalDialog;
 class Application;
 
-class SettingsView : public AbstractView
+class SettingsView Q_DECL_FINAL : public AbstractView
 {
     friend class ModalDialog;
 private:

@@ -1,41 +1,30 @@
-*
+/*
+ * The default background for all items.
+ */
+*,
+QMainWindow,
+QDialog
 {
-	font-family:"Lato";
 	color:#FFF;
 	background:#333;
 /*
 	background:#7A6B6E;
 */
-	border:none;
-}
-
-#Window
-{
-}
-
-#centralWidget
-{
-}
-#centralWidgetContent
-{
-}
-#centralWidgetContent > QTabBar
-{
-	font:900 20pt Raleway;
-	text-transform:uppercase;
-}
-QTabWidget#centralWidgetContent > QTabBar::tab
-{
-	color:#888;
-	margin:1em 1.5em 1em 0.5em;
-	border:none;
-}
-QTabWidget#centralWidgetContent > QTabBar::tab:selected
-{
-	color:#FFF;
 }
 /*
- * Titlebar (QWidget).
+ * The main window.
+ */
+QMainWindow
+{
+}
+/*
+ * Dialogs.
+ */
+QDialog
+{
+}
+/*
+ * The custom titlebar for frameless windows/dialogs.
  */
 #Titlebar
 {
@@ -56,26 +45,101 @@ QTabWidget#centralWidgetContent > QTabBar::tab:selected
 	height:1em;
 	margin:0;
 }
+
+
+
+
+
+#centralWidget
+{
+}
+#centralWidgetContent
+{
+	border:none;
+}
+#centralWidgetContent > QTabBar
+{
+	font:900 20pt Raleway;
+	text-transform:uppercase;
+}
+QTabWidget#centralWidgetContent > QTabBar::tab
+{
+	color:#888;
+	margin:1em 1.5em 1em 0.5em;
+	border:none;
+}
+QTabWidget#centralWidgetContent > QTabBar::tab:selected
+{
+	color:#FFF;
+}
 /*
  * footer
  */
 #footer
 {
-	font-size:8pt;
-	font-weight:bold;
+	font:900 8pt Lato;
 }
+
+
 /*
- * ModalDialog (QDialog).
+ * The AuthenticationView.
  */
-#ModalDialog
+itchio--AuthenticationView
 {
 }
+itchio--AuthenticationView > QLineEdit,
+itchio--AuthenticationView > QPushButton
+{
+	height:2em;
+}
+itchio--AuthenticationView > QLineEdit
+{
+	font:400 12pt Lato;
+	color:#777;
+	background:transparent;
+}
+itchio--AuthenticationView > QLineEdit:focus
+{
+	color:#FFF;
+}
+itchio--AuthenticationView > #loginButton
+{
+	font:900 14pt Raleway;
+	text-transform:uppercase;
+	border:0;
+	border-radius:2px;
+	color:#FA5C5C;
+	background:rgba(0, 0, 0, 0.5);
+	margin:0.5em 0 0 0;
+}
+itchio--AuthenticationView > #loginButton:!enabled
+{
+	color:rgba(255, 255, 255, 0.1);
+	background:rgba(0, 0, 0, 0.3);
+}
+itchio--AuthenticationView > #loginButton:focus:enabled,
+itchio--AuthenticationView > #loginButton:hover:enabled
+{
+	color:#333;
+	background:#FA5C5C;
+	outline:none;
+}
+itchio--AuthenticationView > #inputSeparator
+{
+	background:#333;
+}
+itchio--AuthenticationView > #statusMessage
+{
+	font:400 10pt Lato;
+	margin:0.5em 0 0 0;
+	color:rgba(255, 255, 255, 0.4);
+}
 /*
- * LibraryView -- contentTitleView (QListView).
+ * The LibraryView.
  */
 #contentTitleView
 {
-	font-size:12pt;
+	font:400 14pt Lato;
 	margin-left:0.25em;
 }
 #contentTitleView::item
@@ -91,10 +155,6 @@ QTabWidget#centralWidgetContent > QTabBar::tab:selected
 {
 	color:#6A6EA9;
 }
-/*
- * LibraryView -- contentDetailedView (QWidget).
- */
 #contentDetailedView
 {
-	background:red;
 }
