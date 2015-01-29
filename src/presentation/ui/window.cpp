@@ -1,5 +1,6 @@
 #include "window.h"
 #include "ui_window.h"
+#include "modaldialog.h"
 #include <QPushButton>
 #include "titlebar.h"
 #include "application.h"
@@ -30,14 +31,6 @@ Window::~Window()
         delete ui_;
 }
 /*!
- * \brief Displays the modal dialog with the specified \a view.
- * Returns true if the dialog was accepted, false otherwise.
- */
-bool Window::openModalDialog(const ModalDialog::View& view)
-{
-    return ModalDialog(view, application_).exec() == QDialog::Accepted;
-}
-/*!
  * \brief Initializes the content views.
  */
 void Window::initializeUserInterface()
@@ -51,7 +44,7 @@ void Window::initializeUserInterface()
     ui_->setupUi(this);
     ui_->titlebarFrameLayout->addWidget(titlebar_);
 
-    connect(titlebar_->settingsButton(), &QPushButton::clicked, [this](){ openModalDialog(ModalDialog::View::Settings); });
+    connect(titlebar_->settingsButton(), &QPushButton::clicked, [this](){ ModalDialog::open(ModalDialog::View::Settings, application_); });
     titlebar_->setTitle(application_.organizationDomain());
 }
 /*!

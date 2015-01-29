@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
-#include "modaldialog.h"
 
 class QSystemTrayIcon;
 namespace Ui { class Window; }
@@ -17,8 +16,6 @@ class Titlebar;
 class Window Q_DECL_FINAL : public QMainWindow
 {
     friend class Application;
-public:
-    bool openModalDialog(const ModalDialog::View& view);
 private:
     explicit Window(Application& application);
     ~Window();

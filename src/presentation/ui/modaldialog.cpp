@@ -11,44 +11,43 @@ using itchio::AbstractView;
 /*!
  * Instantiates a ModalDialog with the specified \a view.
  */
-ModalDialog::ModalDialog(const ModalDialog::View& view, Application& application) :
+ModalDialog::ModalDialog(const ModalDialog::View& view, Application& application, const QVariant& args) :
 QDialog(nullptr, Qt::CustomizeWindowHint |  Qt::FramelessWindowHint | Qt::Dialog),
-ui_(new Ui::ModalDialog),
 titlebar_(new Titlebar(*this))
 {
-    Q_ASSERT(ui_ != nullptr);
     Q_ASSERT(titlebar_ != nullptr);
 
-    ui_->setupUi(this);
-    ui_->titlebarFrameLayout->addWidget(titlebar_);
+    ui_.setupUi(this);
+    ui_.titlebarFrameLayout->addWidget(titlebar_);
 
 
 
     //TODO Implement me.
-    ui_->buttonBox->hide();
+    ui_.buttonBox->hide();
 
 
 
     setWindowIcon(QIcon(":/icon/window"));
     setModal(true);
-    setView(view, application);
+    setView(view, application, args);
 
     titlebar_->showSettingsButton(false);
     titlebar_->showMinimizeButton(false);
 }
 /*!
- * \brief Destroys the ModalDialog instance.
+ * \brief Displays a modal dialog with the specified \a view.
+ * Returns true if the dialog was accepted, false otherwise.
  */
-ModalDialog::~ModalDialog()
+bool ModalDialog::open(const ModalDialog::View& view, Application& application, const QVariant& args)
 {
-    // Note that titlebar_ is a child to another QObject child so it's memory cleanup is handled by Qt.
-    delete ui_;
+    return ModalDialog(view, application, args).exec() == QDialog::Accepted;
 }
 /*!
  * \brief Centers the modal dialog.
  */
 void ModalDialog::setCentered()
 {
+    //TODO Implement me.
     move(QPoint(0, 0));
 }
 /*!
@@ -56,7 +55,7 @@ void ModalDialog::setCentered()
  */
 void ModalDialog::setResizable(const bool resizable)
 {
-    auto* const dialogLayout = ui_->modalDialogLayout;
+    auto* const dialogLayout = ui_.modalDialogLayout;
     if (dialogLayout != nullptr)
         dialogLayout->setSizeConstraint(resizable ? QLayout::SetDefaultConstraint : QLayout::SetFixedSize);
 
@@ -65,9 +64,9 @@ void ModalDialog::setResizable(const bool resizable)
 /*!
  * \brief Sets the modal dialog's central widget to the specified \a view.
  */
-void ModalDialog::setView(const ModalDialog::View& view, Application& application)
+void ModalDialog::setView(const ModalDialog::View& view, Application& application, const QVariant&)
 {
-    auto* const layout = ui_->contentFrameLayout;
+    auto* const layout = ui_.contentFrameLayout;
     if (layout != nullptr)
     {
         AbstractView* viewInstance = nullptr;

@@ -1,4 +1,5 @@
 #include "application.h"
+#include "modaldialog.h"
 
 int main(int argc, char** argv)
 {
@@ -18,7 +19,7 @@ int main(int argc, char** argv)
 
         // If the authentication dialog is rejected, the user explicitly closed the
         // authentication window. The application should gracefully exit.
-        if (!application.openAuthenticationDialog())
+        if (!itchio::ModalDialog::open(itchio::ModalDialog::View::Authentication, application))
             return 0;
 
         // Start the event loop.

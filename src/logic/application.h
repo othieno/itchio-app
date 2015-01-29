@@ -17,8 +17,6 @@ class Application : public QApplication
 public:
     Application(int& argc, char** argv);
 
-    bool openAuthenticationDialog();
-
     Settings& settings();
     const Settings& settings() const;
 

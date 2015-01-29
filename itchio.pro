@@ -39,7 +39,8 @@ HEADERS += \
     src/presentation/views/catalogview.h \
     src/presentation/views/libraryview.h \
     src/presentation/views/settingsview.h \
-    src/logic/domain/content.h
+    src/logic/domain/content.h \
+    src/presentation/ui/framelesswindow.h
 
 SOURCES += \
     src/itchio.cpp \

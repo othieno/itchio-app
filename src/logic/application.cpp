@@ -32,13 +32,6 @@ contentManager_(*this)
     networkManager_.initialize();
 }
 /*!
- * \brief Displays the authentication dialog and returns true if it was accepted, false if it was rejected.
- */
-bool Application::openAuthenticationDialog()
-{
-    return window_.openModalDialog(ModalDialog::View::Authentication);
-}
-/*!
  * \brief Returns the application's settings.
  */
 Settings& Application::settings()
