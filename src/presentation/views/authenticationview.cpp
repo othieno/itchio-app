@@ -8,37 +8,48 @@ AuthenticationView::AuthenticationView(ModalDialog& dialog, Application& applica
 AbstractView(dialog),
 authenticator_(application.authenticator()),
 settings_(application.settings()),
-doApiKeyAuthentication_(false)
+usernameValidator_(/*QRegExp("")*/), //TODO Find the regular expression that accepts a valid username.
+enableApiKeyAuthentication_(false)
 {
     ui_.setupUi(this);
+    ui_.usernameInput->setValidator(&usernameValidator_);
 
+    //TODO Implement this.
+    ui_.rememberUserButton->hide();
 
-    //TODO Refactor these.
-    ui_.changeUserButton->hide();
-    ui_.offlineLoginButton->hide();
-    ui_.rememberUserCheckbox->hide();
+    connect(ui_.authenticateButton, &QPushButton::clicked, this, &AuthenticationView::onAuthenticateButtonClicked);
+    connect(&authenticator_,   &Authenticator::authenticated, &dialog, &ModalDialog::accept);
+    connect(&authenticator_,   &Authenticator::authenticationFailed, this, &AuthenticationView::onAuthenticationFailed);
 
+    // If user credentials were previously saved and are still valid, use them.
+    auto savedUsername = settings_.username();
+    auto savedUsernameLength = savedUsername.length();
 
+    enableApiKeyAuthentication_ =
+    settings_.autoLogin() &&
+    settings_.hasValidApiKey() &&
+    savedUsernameLength > 0 &&
+    usernameValidator_.validate(savedUsername, savedUsernameLength) == QValidator::Acceptable;
 
-    connect(ui_.loginButton,   &QPushButton::clicked,  this, &AuthenticationView::onLoginButtonClicked);
-    connect(ui_.usernameInput, &QLineEdit::textEdited, this, &AuthenticationView::onInputChanged);
-    connect(ui_.passwordInput, &QLineEdit::textEdited, this, &AuthenticationView::onInputChanged);
-
-    connect(&authenticator_, &Authenticator::authenticated, &dialog, &ModalDialog::accept);
-    connect(&authenticator_, &Authenticator::authenticationFailed, this, &AuthenticationView::onAuthenticationFailed);
-
-    // Disable the login button. It is only enabled if user input is valid.
-    ui_.loginButton->setEnabled(false);
-
-    // If user credentials have been saved, use them.
-    if (settings_.autoLogin() && settings_.username() != "" && settings_.hasValidApiKey())
+    if (enableApiKeyAuthentication_)
     {
-        doApiKeyAuthentication_ = true;
-
-        ui_.usernameInput->setText(settings_.username());
+        ui_.usernameInput->setText(savedUsername);
         ui_.passwordInput->setText("PasswordPlaceholder");
-        ui_.loginButton->setEnabled(true);
+
+        setStatusMessage(tr("Enabled API key authentication"));
     }
+    else
+    {
+        // Disable the authenticate button. It is only enabled if user input is valid.
+        ui_.authenticateButton->setEnabled(false);
+    }
+
+    // Enable input handlers.
+    // PS. This is done purposefully after determining whether or not to enable API key authentication
+    // since the QLineEdit::setText emits the QLineEdit::textChanged signal, and QLineEdit::textEdited
+    // is unfortunately not a solution.
+    connect(ui_.usernameInput, &QLineEdit::textChanged, this, &AuthenticationView::onInputChanged);
+    connect(ui_.passwordInput, &QLineEdit::textChanged, this, &AuthenticationView::onInputChanged);
 }
 /*!
  * \brief Disables the view's input components if \a disable is set to true.
@@ -47,7 +58,7 @@ void AuthenticationView::disableInputComponents(const bool disable)
 {
     const std::initializer_list<QWidget*>& widgets =
     {
-        ui_.loginButton,
+        ui_.authenticateButton,
         ui_.usernameInput,
         ui_.passwordInput
     };
@@ -85,34 +96,30 @@ void AuthenticationView::onInputChanged()
 {
     // If the user input changes, then it's likely a username/password pair that differs
     // from the saved one has been entered. Consequently, the saved API key is useless.
-    if (doApiKeyAuthentication_)
+    if (enableApiKeyAuthentication_)
     {
-        doApiKeyAuthentication_ = false;
+        enableApiKeyAuthentication_ = false;
         ui_.usernameInput->setText(QString());
         ui_.passwordInput->setText(QString());
 
-        // Notify the user that API key authentication is disabled.
-        onAuthenticationFailed(tr("Discarding API key."));
+        setStatusMessage(tr("Disabled API key authentication."));
     }
 
-    //TODO Perform a more thorough validation.
-    bool isValidInput = username() != "" && password() != "";
-
-    ui_.loginButton->setEnabled(isValidInput);
+    ui_.authenticateButton->setEnabled(!username().isEmpty() && !password().isEmpty());
 }
 /*!
- * \brief Authenticates user input when the login button is pressed.
+ * \brief Authenticates user input when the authenticate button is pressed.
  */
-void AuthenticationView::onLoginButtonClicked()
+void AuthenticationView::onAuthenticateButtonClicked()
 {
     setStatusMessage(tr("Authenticating ..."));
 
     // Disable all input components to prevent any interference during the authentication phase.
     disableInputComponents();
 
-    const auto& key = doApiKeyAuthentication_ ? settings_.apiKey() : password();
+    const auto& key = enableApiKeyAuthentication_ ? settings_.apiKey() : password();
 
-    authenticator_.authenticate(username(), key, doApiKeyAuthentication_);
+    authenticator_.authenticate(username(), key, enableApiKeyAuthentication_);
 }
 /*!
  * \brief Handles authentication failure.
@@ -122,10 +129,9 @@ void AuthenticationView::onAuthenticationFailed(const QString& message)
     setStatusMessage(message);
     disableInputComponents(false);
 
-    if (doApiKeyAuthentication_)
+    if (enableApiKeyAuthentication_)
     {
-        doApiKeyAuthentication_ = false;
+        enableApiKeyAuthentication_ = false;
         ui_.passwordInput->setText(QString());
-        ui_.loginButton->setDisabled(true);
     }
 }

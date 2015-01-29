@@ -3,10 +3,13 @@
 
 #include <ostream>
 
+class QJsonObject;
+
 namespace itchio {
 
-struct Price
+class Price
 {
+public:
     enum class Currency
     {
         USD,
@@ -14,9 +17,21 @@ struct Price
         EUR,
     };
 
-    unsigned int whole; // TODO Find a better name for this, i.e. the part before the decimal.
-    unsigned int cents; // TODO Find a better name for this, i.e. the part after the decimal.
-    Currency currency;
+    Price(const int amount, const Currency& currency);
+//    operator QString();
+
+    const Currency& currency() const;
+    void setCurrency(const Currency& currency);
+
+    int amount() const;
+
+    int whole() const;
+    int cents() const;
+
+    static Price fromJson(const QJsonObject& object);
+private:
+    int amount_;
+    Currency currency_;
 };
 
 } // namespace itchio

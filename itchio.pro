@@ -38,7 +38,8 @@ HEADERS += \
     src/presentation/views/authenticationview.h \
     src/presentation/views/catalogview.h \
     src/presentation/views/libraryview.h \
-    src/presentation/views/settingsview.h
+    src/presentation/views/settingsview.h \
+    src/logic/domain/content.h
 
 SOURCES += \
     src/itchio.cpp \
@@ -64,7 +65,9 @@ SOURCES += \
     src/presentation/models/librarymodel.cpp \
     src/presentation/ui/modaldialog.cpp \
     src/presentation/ui/titlebar.cpp \
-    src/presentation/ui/window.cpp
+    src/presentation/ui/window.cpp \
+    src/logic/domain/content.cpp \
+    src/logic/domain/price.cpp
 
 FORMS += \
     src/presentation/forms/authenticationview.ui \

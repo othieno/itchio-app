@@ -5,10 +5,10 @@
 QMainWindow,
 QDialog
 {
-	color:#FFF;
-	background:#333;
+    color:#FFF;
+    background:#333;
 /*
-	background:#7A6B6E;
+    background:#7A6B6E;
 */
 }
 /*
@@ -28,24 +28,45 @@ QDialog
  */
 #Titlebar
 {
-	background:rgba(0, 0, 0, 0.5);
+    background:rgba(0, 0, 0, 0.5);
 }
 #Titlebar > *
 {
-	color:#FFF;
-	background:transparent;
-	margin:0 0 0.25em 0;
+    color:#FFF;
+    background:transparent;
+    margin:0 0 0.25em 0;
 }
 #Titlebar > #title
 {
-	font:700 9pt Lato;
+    font:700 9pt Lato;
 }
 #Titlebar > #settingsButton
 {
-	height:1em;
-	margin:0;
+    height:1em;
+    margin:0;
 }
-
+/*
+ * Scrollbars.
+ */
+QScrollBar,
+QScrollBar::add-line,
+QScrollBar::sub-line
+{
+	border:none;
+}
+QScrollBar
+{
+	width:0.4em;
+}
+QScrollBar::add-line,
+QScrollBar::sub-line
+{
+	background:none;
+}
+QScrollBar::handle
+{
+	background:rgba(255, 255, 255, 0.2);
+}
 
 
 
@@ -55,29 +76,29 @@ QDialog
 }
 #centralWidgetContent
 {
-	border:none;
+    border:none;
 }
 #centralWidgetContent > QTabBar
 {
-	font:900 20pt Raleway;
-	text-transform:uppercase;
+    font:400 20pt Raleway;
+    text-transform:uppercase;
 }
 QTabWidget#centralWidgetContent > QTabBar::tab
 {
-	color:#888;
-	margin:1em 1.5em 1em 0.5em;
-	border:none;
+    color:#888;
+    margin:1em 1.5em 1em 0.5em;
+    border:none;
 }
 QTabWidget#centralWidgetContent > QTabBar::tab:selected
 {
-	color:#FFF;
+    color:#FFF;
 }
 /*
  * footer
  */
 #footer
 {
-	font:900 8pt Lato;
+    font:900 8pt Lato;
 }
 
 
@@ -90,71 +111,117 @@ itchio--AuthenticationView
 itchio--AuthenticationView > QLineEdit,
 itchio--AuthenticationView > QPushButton
 {
-	height:2em;
+    height:2em;
 }
 itchio--AuthenticationView > QLineEdit
 {
-	font:400 12pt Lato;
-	color:#777;
-	background:transparent;
+    font:400 12pt Lato;
+    color:#777;
+    background:transparent;
 }
 itchio--AuthenticationView > QLineEdit:focus
 {
-	color:#FFF;
+    color:#FFF;
 }
-itchio--AuthenticationView > #loginButton
+itchio--AuthenticationView > #authenticateButton
 {
-	font:900 14pt Raleway;
-	text-transform:uppercase;
-	border:0;
-	border-radius:2px;
-	color:#FA5C5C;
-	background:rgba(0, 0, 0, 0.5);
-	margin:0.5em 0 0 0;
+    font:900 14pt Raleway;
+    text-transform:uppercase;
+    border:0;
+    border-radius:2px;
+    color:#FA5C5C;
+    background:rgba(0, 0, 0, 0.5);
+    margin:0.5em 0 0 0;
 }
-itchio--AuthenticationView > #loginButton:!enabled
+itchio--AuthenticationView > #authenticateButton:!enabled
 {
-	color:rgba(255, 255, 255, 0.1);
-	background:rgba(0, 0, 0, 0.3);
+    color:rgba(255, 255, 255, 0.1);
+    background:rgba(0, 0, 0, 0.3);
 }
-itchio--AuthenticationView > #loginButton:focus:enabled,
-itchio--AuthenticationView > #loginButton:hover:enabled
+itchio--AuthenticationView > #authenticateButton:focus:enabled,
+itchio--AuthenticationView > #authenticateButton:hover:enabled
 {
-	color:#333;
-	background:#FA5C5C;
-	outline:none;
+    color:#333;
+    background:#FA5C5C;
+    outline:none;
 }
 itchio--AuthenticationView > #inputSeparator
 {
-	background:#333;
+    background:#333;
 }
 itchio--AuthenticationView > #statusMessage
 {
-	font:400 10pt Lato;
-	margin:0.5em 0 0 0;
-	color:rgba(255, 255, 255, 0.4);
+    font:400 10pt Lato;
+    margin:0.5em 0 0 0;
+    color:rgba(255, 255, 255, 0.4);
 }
 /*
  * The LibraryView.
  */
-#contentTitleView
+#contentTitles
 {
-	font:400 14pt Lato;
-	margin-left:0.25em;
+    font:400 14pt Lato;
+    margin:0 0 0 0.25em;
+    border-right:1px solid rgba(255, 255, 255, 0.1);
 }
-#contentTitleView::item
+#contentTitles::item
 {
-	color:#777;
-	background:transparent;
+    color:#777;
+    background:transparent;
 }
-#contentTitleView::item:selected
+#contentTitles::item:selected
 {
-	color:#ABAFE5;
+    color:#ABAFE5;
 }
-#contentTitleView::item:hover:!selected
+#contentTitles::item:hover:!selected
 {
-	color:#6A6EA9;
+    color:#6A6EA9;
 }
-#contentDetailedView
+#contentDetails
 {
+}
+/*
+#contentDetailedView > *
+{
+    font:400 12pt Open Sans;
+    color:#888;
+}
+*/
+
+
+#contentCoverImage
+{
+    background:rgba(0, 0, 0, 0.25);
+}
+#contentTitle,
+#contentSubtitle,
+#contentPlatforms
+{
+    font-weight:900;
+    text-transform:uppercase;
+}
+#contentTitle
+{
+    font-family:Montserrat;
+    font-size:21pt;
+    color:#FFF;
+    margin:-5px 0 -3px -1px;
+}
+#contentSubtitle,
+#contentPlatforms
+{
+    font-family:Open Sans;
+    font-size:10pt;
+    color:#AAA;
+}
+#contentPlatforms
+{
+    font-family:Lato;
+    color:#999;
+    font-size:9pt;
+}
+#contentTagline
+{
+    color:#DDD;
+    font:400 italic 13pt Open Sans;
 }

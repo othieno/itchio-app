@@ -25,17 +25,9 @@ public:
     QList<Game> getGamesByTitle(const QString& title, const bool caseInsensitive = true) const;
     QList<Game> getGamesByAuthor(const QString& author, const bool caseInsensitive = true) const;
     QList<Game> getGamesByGenre(const Game::Genre& genre) const;
-    QList<Game> getGamesByPlatform(const Game::Platform& platform) const;
-    QList<Game> getGamesByStatus(const Game::Status& status) const;
-    QList<Game> getGamesByVisibility(const Game::Visibility& visibility) const;
-private:
-    Game toDomainObject(const QSqlQuery& query) const Q_DECL_OVERRIDE;
-
-    static int toInteger(const QSet<Game::Genre>& genres);
-    static int toInteger(const QSet<Game::Platform>& platforms);
-
-    static QSet<Game::Genre> toGenres(const int bitField);
-    static QSet<Game::Platform> toPlatforms(const int bitField);
+    QList<Game> getGamesByPlatform(const Content::Platform& platform) const;
+    QList<Game> getGamesByStatus(const Content::Status& status) const;
+    QList<Game> getGamesByPermission(const Content::Permission& permission) const;
 };
 
 } // namespace itchio

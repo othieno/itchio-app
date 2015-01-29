@@ -49,10 +49,6 @@ protected:
     database_(database)
     {}
     /*!
-     * Converts the result of an SQL query into the Entry type.
-     */
-    virtual Entry toDomainObject(const QSqlQuery& query) const = 0;
-    /*!
      * The database to query.
      */
     Database& database_;

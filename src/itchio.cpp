@@ -5,8 +5,8 @@ int main(int argc, char** argv)
     // The following properties must be set before the application is instantiated.
     QCoreApplication::setOrganizationDomain("itch.io");
     QCoreApplication::setOrganizationName("itch.io");
+    QCoreApplication::setApplicationName("itch.io");
     QCoreApplication::setApplicationVersion("0.0");
-    QCoreApplication::setApplicationName("itchio");
 
     do
     {

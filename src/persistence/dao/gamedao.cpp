@@ -2,9 +2,11 @@
 #include "game.h"
 #include "database.h"
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QVariant>
 
 using itchio::GameDAO;
+using itchio::Content;
 using itchio::Game;
 
 /*!
@@ -18,22 +20,28 @@ AbstractDAO(database)
  */
 void GameDAO::createTables()
 {
+    //TODO Set VARCHAR maximum limits.
     constexpr const char* const CREATE_STATEMENT =
     "CREATE TABLE IF NOT EXISTS games ("
     "identifier      INTEGER PRIMARY KEY,"
-    "title           VARCHAR(128),"
-    "author          VARCHAR(128),"
-    "coverImageURL   VARCHAR(128),"
-    "tagline         VARCHAR(128),"
-    "genres          INTEGER,"
-    "platforms       INTEGER,"
+    "title           VARCHAR,"
+    "author          VARCHAR,"
+    "published       BOOLEAN,"
+    "creationDate    VARCHAR,"
+    "publishDate     VARCHAR,"
+    "webPageURL      VARCHAR,"
+    "tags            VARCHAR,"
     "status          INTEGER,"
-    "tags            VARCHAR(128),"
-    "visibility      INTEGER,"
-    "type            VARCHAR(128),"
-    "publishDate     VARCHAR(128)"
+    "access          INTEGER,"
+    "downloadCount   INTEGER,"
+    "viewCount       INTEGER,"
+    "purchaseCount   INTEGER,"
+    "platforms       INTEGER,"
+    "coverImageURL   VARCHAR,"
+    "tagline         VARCHAR,"
+    "type            VARCHAR,"
+    "genres          INTEGER"
     ")";
-
     database_.exec(CREATE_STATEMENT);
 }
 /*!
@@ -48,15 +56,68 @@ void GameDAO::dropTables()
  */
 void GameDAO::insertMockRecords()
 {
-    const auto& titles  = std::array<QString, 5>{"Hurricane","Metro","Asimov","Pelagic","Hurricane X"};
-    const auto& authors = std::array<QString, 5>{"Me","Him","Her","Them","Me"};
+    const std::array<QString, 66 * 2> entries =
+    {
+        "Metal Gear Solid V: The Phantom Pain","Kojima Productions",
+        "Asimov",                  "After Dark Studios",
+        "Pelagic",                 "After Dark Studios",
+        "Naut",                    "The Klondike Collective",
+        "PARTICLE MACE",           "Andy Wallace",
+        "Glass Wing",              "From Soy Sauce",
+        "Super Galaxy Squadron",   "Nick Clinkscales",
+        "Precipice",               "Ryan Trawick",
+        "GLASS CANNONS",           "Alpha Six Productions",
+        "Sandstorm",               "Daniel Linssen",
+        "C64anabalt",              "Paul Koller",
+        "LISA: The Painful RPG",   "dingalingboy",
+        "PARTICLE MACE",           "Andy Wallace",
+        "Glass Wing",              "From Soy Sauce",
+        "Super Galaxy Squadron",   "Nick Clinkscales",
+        "Precipice",               "Ryan Trawick",
+        "GLASS CANNONS",           "Alpha Six Productions",
+        "Sandstorm",               "Daniel Linssen",
+        "C64anabalt",              "Paul Koller",
+        "LISA: The Painful RPG",   "dingalingboy",
+        "PARTICLE MACE",           "Andy Wallace",
+        "Glass Wing",              "From Soy Sauce",
+        "Super Galaxy Squadron",   "Nick Clinkscales",
+        "Precipice",               "Ryan Trawick",
+        "GLASS CANNONS",           "Alpha Six Productions",
+        "Sandstorm",               "Daniel Linssen",
+        "C64anabalt",              "Paul Koller",
+        "LISA: The Painful RPG",   "dingalingboy",
+        "PARTICLE MACE",           "Andy Wallace",
+        "Glass Wing",              "From Soy Sauce",
+        "Super Galaxy Squadron",   "Nick Clinkscales",
+        "Precipice",               "Ryan Trawick",
+        "GLASS CANNONS",           "Alpha Six Productions",
+        "Sandstorm",               "Daniel Linssen",
+        "C64anabalt",              "Paul Koller",
+        "LISA: The Painful RPG",   "dingalingboy",
+        "PARTICLE MACE",           "Andy Wallace",
+        "Glass Wing",              "From Soy Sauce",
+        "Super Galaxy Squadron",   "Nick Clinkscales",
+        "Precipice",               "Ryan Trawick",
+        "GLASS CANNONS",           "Alpha Six Productions",
+        "Sandstorm",               "Daniel Linssen",
+        "C64anabalt",              "Paul Koller",
+        "LISA: The Painful RPG",   "dingalingboy",
+        "PARTICLE MACE",           "Andy Wallace",
+        "Glass Wing",              "From Soy Sauce",
+        "Super Galaxy Squadron",   "Nick Clinkscales",
+        "Precipice",               "Ryan Trawick",
+        "GLASS CANNONS",           "Alpha Six Productions",
+        "Sandstorm",               "Daniel Linssen",
+        "C64anabalt",              "Paul Koller",
+        "LISA: The Painful RPG",   "dingalingboy",
+    };
 
     Game g;
-    for (unsigned i = 0; i < titles.size(); ++i)
+    for (unsigned i = 0; i < entries.size(); i += 2)
     {
         g.identifier = i + 1000;
-        g.title = titles[i];
-        g.author = authors[i];
+        g.title      = entries[i];
+        g.author     = entries[i + 1];
 
         save(g);
     }
@@ -71,15 +132,21 @@ void GameDAO::save(const Game& game)
     ":identifier,"
     ":title,"
     ":author,"
+    ":published,"
+    ":creationDate,"
+    ":publishDate,"
+    ":webPageURL,"
+    "NULL," //":tags,"
+    "NULL," //":status,"
+    "NULL," //":access,"
+    ":downloadCount,"
+    ":viewCount,"
+    ":purchaseCount,"
+    ":platforms,"
     ":coverImageURL,"
     ":tagline,"
-    ":genres,"
-    ":platforms,"
-    ":status,"
-    "NULL," //TODO tags
-    "NULL," //TODO visibility
-    "NULL," //TODO type
-    "NULL" //TODO publishDate
+    ":type,"
+    ":genres"
     ")";
 
     QSqlQuery query(database_);
@@ -88,11 +155,19 @@ void GameDAO::save(const Game& game)
     query.bindValue(":identifier", game.identifier);
     query.bindValue(":title", game.title);
     query.bindValue(":author", game.author);
+    query.bindValue(":published", game.published);
+    query.bindValue(":creationDate", game.creationDate.toString(Content::DATE_TIME_FORMAT));
+    query.bindValue(":publishDate", game.publishDate.toString(Content::DATE_TIME_FORMAT));
+    query.bindValue(":webPageURL", game.webPageURL);
+
+    query.bindValue(":downloadCount", game.downloadCount);
+    query.bindValue(":viewCount", game.viewCount);
+    query.bindValue(":purchaseCount", game.purchaseCount);
+    query.bindValue(":platforms", int(game.platforms));
     query.bindValue(":coverImageURL", game.coverImageURL);
     query.bindValue(":tagline", game.tagline);
-    query.bindValue(":genres", toInteger(game.genres));
-    query.bindValue(":platforms", toInteger(game.platforms));
-    query.bindValue(":status", static_cast<int>(game.status));
+    query.bindValue(":type", game.type);
+    query.bindValue(":genres", int(game.genres));
 
     query.exec();
 }
@@ -105,7 +180,7 @@ Game GameDAO::get(const unsigned int& identifier) const
 
     auto query = database_.exec(SELECT_STATEMENT);
 
-    return query.next() ? toDomainObject(query) : Game();
+    return query.next() ? Game(query.record()) : Game();
 }
 /*!
  * \brief Returns all games in the database.
@@ -115,7 +190,7 @@ QList<Game> GameDAO::getAll() const
     QList<Game> result;
     auto query = database_.exec("SELECT * FROM games");
     while (query.next())
-        result.append(toDomainObject(query));
+        result.append(Game(query.record()));
 
     return result;
 }
@@ -142,7 +217,7 @@ QList<Game> GameDAO::getGamesByTitle(const QString& title, const bool caseInsens
     QList<Game> result;
     auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
-        result.append(toDomainObject(query));
+        result.append(Game(query.record()));
 
     return result;
 }
@@ -160,7 +235,7 @@ QList<Game> GameDAO::getGamesByAuthor(const QString& author, const bool caseInse
     QList<Game> result;
     auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
-        result.append(toDomainObject(query));
+        result.append(Game(query.record()));
 
     return result;
 }
@@ -183,7 +258,7 @@ QList<Game> GameDAO::getGamesByGenre(const Game::Genre& genre) const
     QList<Game> result;
     auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
-        result.append(toDomainObject(query));
+        result.append(Game(query.record()));
 
     return result;
 */
@@ -207,7 +282,7 @@ QList<Game> GameDAO::getGamesByPlatform(const Game::Platform& platform) const
     QList<Game> result;
     auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
-        result.append(toDomainObject(query));
+        result.append(Game(query.record()));
 
     return result;
 */
@@ -223,80 +298,22 @@ QList<Game> GameDAO::getGamesByStatus(const Game::Status& status) const
     QList<Game> result;
     auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
-        result.append(toDomainObject(query));
+        result.append(Game(query.record()));
 
     return result;
 }
 /*!
- * \brief Returns all games with the specified \a visibility.
+ * \brief Returns all games with the specified \a permission.
  */
-QList<Game> GameDAO::getGamesByVisibility(const Game::Visibility& visibility) const
+QList<Game> GameDAO::getGamesByPermission(const Content::Permission& permission) const
 {
     const auto& SELECT_STATEMENT =
-    QString("SELECT * FROM games WHERE visibility = '%1'").arg(static_cast<int>(visibility));
+    QString("SELECT * FROM games WHERE access = '%1'").arg(static_cast<int>(permission));
 
     QList<Game> result;
     auto query = database_.exec(SELECT_STATEMENT);
     while (query.next())
-        result.append(toDomainObject(query));
+        result.append(Game(query.record()));
 
     return result;
-}
-/*!
- * \brief Returns the result of an SQL query in the form of a Game object.
- */
-Game GameDAO::toDomainObject(const QSqlQuery& query) const
-{
-    Game result;
-
-    result.identifier     = query.value(0).toInt();
-    result.title          = query.value(1).toString();
-    result.author         = query.value(2).toString();
-    result.coverImageURL  = query.value(3).toString();
-    result.tagline        = query.value(4).toString();
-    result.genres         = toGenres(query.value(5).toInt());
-    result.platforms      = toPlatforms(query.value(6).toInt());
-    result.status         = static_cast<Game::Status>(query.value(7).toInt());
-//    result.tags           = query.value(8).toInt();
-//    result.visibility     = query.value(9).toInt();
-//    result.type           = query.value(10).toString();
-//    result.publishDate    = query.value(11).toString();
-
-    return result;
-}
-/*!
- * \brief Converts a set of \a genres into an integer bit field.
- */
-int GameDAO::toInteger(const QSet<Game::Genre>& genres)
-{
-    //TODO Implement me.
-    Q_UNUSED(genres);
-    return 0;
-}
-/*!
- * \brief Converts a set of \a platforms into an integer bit field.
- */
-int GameDAO::toInteger(const QSet<Game::Platform>& platforms)
-{
-    //TODO Implement me.
-    Q_UNUSED(platforms);
-    return 0;
-}
-/*!
- * \brief Converts an integer bit \a field into a set of genres.
- */
-QSet<Game::Genre> GameDAO::toGenres(const int field)
-{
-    //TODO Implement me.
-    Q_UNUSED(field);
-    return QSet<Game::Genre>();
-}
-/*!
- * \brief Converts an integer bit \a field into a set of platforms.
- */
-QSet<Game::Platform> GameDAO::toPlatforms(const int field)
-{
-    //TODO Implement me.
-    Q_UNUSED(field);
-    return QSet<Game::Platform>();
 }

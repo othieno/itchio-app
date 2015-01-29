@@ -3,8 +3,11 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QSqlRecord>
+#include <QVariant>
 
 using itchio::Game;
+
 
 //TODO Move to header file.
 static constexpr const unsigned int MAX_TITLE_LENGTH = 128;
@@ -16,6 +19,7 @@ static constexpr const unsigned int MAX_APPLESTOREURL_LENGTH = 128;
 static constexpr const unsigned int MAX_COVERIMAGEURL_LENGTH = 128;
 static constexpr const unsigned int MAX_TAG_COUNT = 10;
 
+//TODO Move to NetworkManager::receivedGames.
 constexpr const char* const SAMPLE =
 "{\
    \"games\":[\
@@ -48,103 +52,57 @@ constexpr const char* const SAMPLE =
    ]\
 }";
 
-#include <QDebug> //TODO Remove me.
-Game Game::fromJson(/*const QJsonObject&*/)
+
+
+/*!
+ * \brief Instantiates a Game object.
+ */
+Game::Game() :
+//Content(Type::Game),
+Game(QJsonDocument::fromJson(SAMPLE).object()["games"].toArray()[0].toObject())
+{}
+/*!
+ * \brief Constructs a Game object from the specified JSON \a object.
+ */
+Game::Game(const QJsonObject& object) :
+Content(Type::Game, object)
 {
-    constexpr const char* const KEY_ID = "id";
-    constexpr const char* const KEY_TITLE = "title";
-    constexpr const char* const KEY_AUTHOR = "author";
-    constexpr const char* const KEY_TAGLINE = "short_text";
-#ifdef EXPERIMENTAL
-    constexpr const char* const KEY_HOMEPAGEURL = "url";
-    constexpr const char* const KEY_GOOGLEPLAYURL = ""; //FIXME
-    constexpr const char* const KEY_APPLESTOREURL = ""; //FIXME
-    constexpr const char* const KEY_COVERIMAGEURL = "cover_url";
+    coverImageURL = object["cover_url"].toString();
+    tagline = object["short_text"].toString();
+    type = object["type"].toString();
+#ifdef TODO
+    genres = 0;
+    minimumPrice = Price::fromJson(object["min_price"].toObject());
+    earnings = Price::fromJson(object["type"].toObject());
+    googlePlayURL = object["google_play_url"].toString();
+    appleStoreURL = object["apple_store_url"].toString();
 #endif
-    Game game;
-
-    const auto& object = QJsonDocument::fromJson(SAMPLE).object()["games"].toArray()[0].toObject();
-//    return Game::fromJson(QJsonObject::fromJson(SAMPLE));
-
-    game.identifier = object[KEY_ID].toInt();
-    game.title = object[KEY_TITLE].toString();
-    game.author = object[KEY_AUTHOR].toString();
-    game.tagline = object[KEY_TAGLINE].toString();
-
-#ifdef EXPERIMENTAL
-//    game.coverImageURL = object[KEY_COVERIMAGEURL].toString();
-
-
-//    QSet<Platform> platforms;
-//    QSet<QString>  tags;
-
-
-    game.homePageURL   = object[KEY_HOMEPAGEURL].toString();
-    game.googlePlayURL = object[KEY_GOOGLEPLAYURL].toString();
-    game.appleStoreURL = object[KEY_APPLESTOREURL].toString();
-
-
-
-
-
-
-
-
-
-
-//    QSet<Platform> platforms;
-//    QSet<QString>  tags;
-
-
-
-/*
-    {
-        "created_at":"2013-03-03 23:02:14",
-        "downloads_count":109,
-        "earnings":[{"amount":5047,"amount_formatted":"$50.47","currency":"USD"}],
-        "min_price":0,
-        "p_android":false,
-        "p_linux":true,
-        "p_osx":true,
-        "p_windows":true,
-        "published":true,
-        "published_at":"2013-03-03 23:02:14",
-        "purchases_count":4,
-        "type":"default",
-        "url":"http://leafo.itch.io/x-moon",
-        "views_count":2682
-    }
-*/
-#endif
-    return game;
 }
-
-Game::operator QString() const
+/*!
+ * \brief Constructs a Game object from the specified SQL \a record.
+ */
+Game::Game(const QSqlRecord& record) :
+Content(Type::Game, record)
 {
-    std::stringstream ss;
-    ss << *this;
-
-    return QString::fromStdString(ss.str());
+    coverImageURL = record.value(record.indexOf("coverImageURL")).toString();
+    tagline = record.value(record.indexOf("tagline")).toString();
+    type = record.value(record.indexOf("type")).toString();
+    genres = static_cast<Genres>(record.value(record.indexOf("genres")).toInt());
 }
-
-std::ostream& operator<<(std::ostream& os, const QString& s)
+/*!
+ * Returns a list containing all genres.
+ */
+QLinkedList<Game::Genre> Game::listOfGameGenres()
 {
-    os << s.toStdString();
-    return os;
-}
-
-std::ostream& operator<<(std::ostream& os, const Game& game)
-{
-    os
-    << "Title: " << game.title << std::endl
-    << "Author: " << game.author << std::endl
-    << "Identifier: " << game.identifier << std::endl
-    << "Tagline: " << game.tagline << std::endl;
-#ifdef EXPERIMENTAL
-    << "Cover Image: " << game.coverImageURL.filename << std::endl
-    << "Home page: " << game.homePageURL << std::endl
-    << "Google Play Store: " << game.googlePlayURL << std::endl
-    << "Apple App Store: " << game.appleStoreURL << std::endl;
-#endif
-    return os;
+    return QLinkedList<Game::Genre>()
+    << Genre::Action
+    << Genre::Platformer
+    << Genre::Shooter
+    << Genre::Adventure
+    << Genre::RolePlaying
+    << Genre::Simulation
+    << Genre::Strategy
+    << Genre::Puzzle
+    << Genre::Sports
+    << Genre::Other;
 }

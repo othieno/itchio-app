@@ -175,8 +175,13 @@ void Application::restart()
  */
 void Application::setApplicationStyle()
 {
-    QFontDatabase::addApplicationFont(":/font/Lato");
-    QFontDatabase::addApplicationFont(":/font/Raleway");
+    for (const auto& path :
+    {
+        ":/font/Lato",
+        ":/font/Raleway",
+        ":/font/OpenSans",
+        ":/font/Montserrat"
+    }) QFontDatabase::addApplicationFont(path);
 
     // Set the default stylesheet if none was already specified in the command line arguments.
     if (styleSheet().isEmpty())

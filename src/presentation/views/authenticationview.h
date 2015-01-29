@@ -3,6 +3,7 @@
 
 #include "abstractview.h"
 #include "ui_authenticationview.h"
+#include <QRegExpValidator>
 
 namespace itchio {
 
@@ -31,11 +32,11 @@ private:
     Ui::AuthenticationView ui_;
     Authenticator& authenticator_;
     const Settings& settings_;
-
-    bool doApiKeyAuthentication_;
+    const QRegExpValidator usernameValidator_;
+    bool enableApiKeyAuthentication_;
 private slots:
     void onInputChanged();
-    void onLoginButtonClicked();
+    void onAuthenticateButtonClicked();
     void onAuthenticationFailed(const QString& message);
 };
 

@@ -13,6 +13,8 @@
     </qresource>
     <qresource prefix="/font">
         <file alias="Lato">fonts/Lato/Lato-Regular.ttf</file>
-        <file alias="Raleway">fonts/Raleway/Raleway-Thin.ttf</file>
+        <file alias="OpenSans">fonts/OpenSans/OpenSans-Regular.ttf</file>
+        <file alias="Montserrat">fonts/Montserrat/Montserrat-Regular.ttf</file>
+        <file alias="Raleway">fonts/Raleway/Raleway-Regular.ttf</file>
     </qresource>
 </RCC>

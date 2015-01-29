@@ -142,132 +142,110 @@
      <property name="placeholderText">
       <string>Password</string>
      </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QCheckBox" name="rememberUserCheckbox">
-     <property name="focusPolicy">
-      <enum>Qt::ClickFocus</enum>
-     </property>
-     <property name="contextMenuPolicy">
-      <enum>Qt::DefaultContextMenu</enum>
-     </property>
-     <property name="text">
-      <string>Remember me</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="changeUserButton">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>Change User</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="loginButton">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::TabFocus</enum>
-     </property>
-     <property name="contextMenuPolicy">
-      <enum>Qt::NoContextMenu</enum>
-     </property>
-     <property name="text">
-      <string>Authenticate</string>
-     </property>
-     <property name="autoDefault">
+     <property name="clearButtonEnabled">
       <bool>false</bool>
      </property>
-     <property name="default">
-      <bool>true</bool>
-     </property>
-     <property name="flat">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="offlineLoginButton">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
-     </property>
-     <property name="text">
-      <string>Offline Mode</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="statusLayout">
+    <layout class="QHBoxLayout" name="authenticateButtonLayout">
      <property name="spacing">
       <number>0</number>
      </property>
-     <property name="topMargin">
+     <property name="bottomMargin">
       <number>8</number>
      </property>
-     <property name="bottomMargin">
-      <number>0</number>
-     </property>
      <item>
-      <spacer name="statusLayoutLeftSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QPushButton" name="authenticateButton">
+       <property name="enabled">
+        <bool>true</bool>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="statusMessage">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+        <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="font">
-        <font>
-         <family>Lato</family>
-         <pointsize>9</pointsize>
-         <weight>50</weight>
-         <italic>false</italic>
-         <bold>false</bold>
-        </font>
+       <property name="focusPolicy">
+        <enum>Qt::TabFocus</enum>
+       </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
        </property>
        <property name="text">
-        <string/>
+        <string>Authenticate</string>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <spacer name="statusLayoutRightSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+      <widget class="QPushButton" name="rememberUserButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
        </property>
-      </spacer>
+       <property name="contextMenuPolicy">
+        <enum>Qt::NoContextMenu</enum>
+       </property>
+       <property name="toolTip">
+        <string>Remember this user?</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="statusMessage">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <family>Lato</family>
+       <pointsize>9</pointsize>
+       <weight>50</weight>
+       <italic>false</italic>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="contextMenuPolicy">
+      <enum>Qt::NoContextMenu</enum>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

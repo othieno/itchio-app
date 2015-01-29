@@ -1,115 +1,48 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <QString>
-#include <QSet>
-#include <QDateTime>
+#include "content.h"
 #include "price.h"
-
-namespace itchio {
+#include <QLinkedList>
 
 class QJsonObject;
 
-/*
-struct PublishStatistics
-{
-    unsigned int   gameIdentifier;
-    Price          earnings;
-    unsigned int   viewCount;
-    unsigned int   purchaseCount;
-    unsigned int   downloadCount;
-};
-struct BuyInfo
-{
-    bool           isPurchased;
+namespace itchio {
 
-    Price          minimumPrice;
-
-    QString        itchURL;
-    QString        googlePlayURL;
-    QString        appleStoreURL;
-};
-*/
-
-/*!
- * \brief Cover image resolution.
- */
-constexpr static int COVER_IMAGE_WIDTH  = 315;
-constexpr static int COVER_IMAGE_HEIGHT = 250;
-
-
-struct Game
+struct Game : public Content
 {
     /*!
-     *
-     */
-    enum class Status
-    {
-        Cancelled,
-        OnHold,
-        InDevelopment,
-        Prototype,
-        Released
-    };
-    /*!
-     *
+     * An enumeration of all possible genres.
+     * PS. If a new genre is added, make sure the listOfGameGenres function is updated.
      */
     enum class Genre
     {
-        Action,
-        Platformer,
-        Shooter,
-        Adventure,
-        RolePlaying,
-        Simulation,
-        Strategy,
-        Puzzle,
-        Sports,
-        Other
+        Other         = 0x0000,
+        Action        = 0x0001,
+        Platformer    = 0x0002,
+        Shooter       = 0x0004,
+        Adventure     = 0x0008,
+        RolePlaying   = 0x0010,
+        Simulation    = 0x0020,
+        Strategy      = 0x0040,
+        Puzzle        = 0x0080,
+        Sports        = 0x0100
     };
-    /*!
-     *
-     */
-    enum class Visibility
-    {
-        Private,
-        PublicRestricted,
-        Public
-    };
-    /*!
-     * An enumeration of supported platforms.
-     */
-    enum class Platform
-    {
-        Windows,
-        OSX,
-        iOS,
-        Linux,
-        Android,
-        Web
-    };
+    Q_DECLARE_FLAGS(Genres, Genre)
+    static QLinkedList<Genre> listOfGameGenres();
 
-    unsigned int     identifier;
-    QString          title;
-    QString          author;
-    QString          coverImageURL;
-    QString          tagline; // a.k.a. shortText.
-    QSet<Genre>      genres;
-    QSet<Platform>   platforms;
-    Status           status;
-    QSet<QString>    tags;
-    Visibility       visibility;
-    QString          type; //TODO Find out exactly what a game 'type' is. Is it a genre?
+    Game();
+    explicit Game(const QJsonObject& jsonObject);
+    explicit Game(const QSqlRecord& sqlRecord);
 
-    QDateTime        publishDate;
-
-    static Game fromJson(/*const QJsonObject& object*/);
-    operator QString() const;
+    QString coverImageURL;
+    QString tagline; // a.k.a. shortText.
+    QString type; //TODO Find out exactly what a game 'type' is. Is it a genre? Or does it refer to a content type?
+    Genres  genres;
 };
 
 } // namespace itchio
 
-std::ostream& operator<<(std::ostream&, const QString&);
-std::ostream& operator<<(std::ostream&, const itchio::Game&);
+Q_DECLARE_OPERATORS_FOR_FLAGS(itchio::Game::Genres)
 
 #endif // GAME_H
