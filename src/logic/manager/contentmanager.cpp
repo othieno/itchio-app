@@ -15,9 +15,10 @@ using itchio::User;
  * \brief Instantiates a ContentManager that is attached to the specified \a application.
  */
 ContentManager::ContentManager(Application& application) :
-Manager(application),
+networkManager_(application.networkManager()),
 gameDAO_(contentDatabase_)
 {
+    connect(&networkManager_, &NetworkManager::fileDownloaded, this, &ContentManager::onFileDownloaded);
     connect(&autoUpdateTimer_, &QTimer::timeout, this, &ContentManager::updateUserContent);
 
     autoUpdateTimer_.setInterval(DEFAULT_AUTO_UPDATE_INTERVAL);
@@ -45,7 +46,7 @@ void ContentManager::setUser(const User& user)
     contentDatabase_ = DatabaseManager::createDatabase(QString("%1.sqlite").arg(user_.identifier));
     if (!contentDatabase_.open())
     {
-        contentDatabase_ = DatabaseManager::createInMemoryDatabase();
+        contentDatabase_ = DatabaseManager::createDatabase();
         if (!contentDatabase_.open())
             qFatal("[ContentManager] FATAL: Could not open user database.");
     }
@@ -69,7 +70,7 @@ bool ContentManager::isAutoUpdateEnabled() const
  */
 void ContentManager::enableAutoUpdate(const bool enable)
 {
-    if (enable && application_.networkManager().operationMode() == NetworkManager::OperationMode::Online)
+    if (enable && networkManager_.operationMode() == NetworkManager::OperationMode::Online)
         autoUpdateTimer_.start();
     else
         autoUpdateTimer_.stop();
@@ -103,11 +104,18 @@ GameDAO& ContentManager::gameDAO()
     return gameDAO_;
 }
 /*!
- * \brief Returns the path to the directory where all cache data is stored.
+ * \brief Returns the path to the file cache.
  */
-QString ContentManager::cacheLocation()
+QString ContentManager::fileCacheLocation()
 {
     return Application::dataLocation().append("/cache");
+}
+/*!
+ * \brief Returns the prefix added to all cover image files.
+ */
+QString ContentManager::coverImageFilePrefix()
+{
+    return fileCacheLocation().append("/COVER_");
 }
 /*!
  * \brief Updates the current user's stored content.
@@ -115,14 +123,14 @@ QString ContentManager::cacheLocation()
 void ContentManager::updateUserContent()
 {
     gameDAO_.insertMockRecords();
-
-
-
+/*
+    for (const auto& g : gameDAO_.getAll())
+    {
+        networkManager_.download(g.coverImageURL, g.coverImageCacheLocation());
+    }
+*/
 
     //TODO Implement me.
-
-
-
 
 /*
     // If the timer is counting down, then the refresh was requested manually.
@@ -134,11 +142,20 @@ void ContentManager::updateUserContent()
 */
 }
 /*!
- * \brief Empties the cache directory.
+ * \brief Empties the file cache.
  */
-void ContentManager::emptyCache()
+void ContentManager::emptyFileCache()
 {
-    QDir directory(cacheLocation());
+    QDir directory(fileCacheLocation());
     if (directory.exists() && directory.removeRecursively() && directory.mkpath("."))
-        emit cacheEmptied();
+        emit fileCacheEmptied();
+}
+/*!
+ * \brief Handles the NetworkManager::fileDownloaded signal.
+ */
+void ContentManager::onFileDownloaded(const QString& fileName)
+{
+    // If the downloaded file was stored to the file cache, emit the 'fileCacheChanged' signal.
+    if (!QString::compare(fileCacheLocation(), fileName.left(fileCacheLocation().length())))
+        emit fileCacheChanged(fileName);
 }

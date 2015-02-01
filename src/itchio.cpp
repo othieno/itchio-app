@@ -22,7 +22,8 @@ int main(int argc, char** argv)
         if (!itchio::ModalDialog::open(itchio::ModalDialog::View::Authentication, application))
             return 0;
 
-        // Start the event loop.
+        application.showWindow();
+
         const int status = application.exec();
         if (status != itchio::Application::RESTART_ON_EXIT_CODE)
             return status;

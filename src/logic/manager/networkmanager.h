@@ -1,13 +1,14 @@
 #ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
 
-#include "manager.h"
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
 namespace itchio {
 
-class NetworkManager Q_DECL_FINAL : public Manager
+class Application;
+
+class NetworkManager final : public QNetworkAccessManager
 {
     Q_OBJECT
     friend class Application;
@@ -38,6 +39,8 @@ public:
     void requestApiServerStatus();
     void requestApiEncryptionKey();
 
+    void download(const QString& fileURL, const QString& fileName, const bool overwrite = false);
+
     static constexpr const char* API_URL = "https://itch.io/api/1";
 private:
     explicit NetworkManager(Application& application);
@@ -67,6 +70,8 @@ signals:
 
     void receivedApiServerStatus(const QNetworkReply::NetworkError& error, const QByteArray& response);
     void receivedApiEncryptionKey(const QNetworkReply::NetworkError& error, const QByteArray& response);
+
+    void fileDownloaded(const QString& fileName);
 };
 
 } // namespace itchio

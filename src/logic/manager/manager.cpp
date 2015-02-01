@@ -1,3 +1,5 @@
+#ifdef DEPRECATED
+
 #include "manager.h"
 #include "application.h"
 
@@ -17,3 +19,4 @@ const Application& Manager::application() const
 {
     return application_;
 }
+#endif

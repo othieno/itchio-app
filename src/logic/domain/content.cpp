@@ -1,7 +1,9 @@
 #include "content.h"
+#include "contentmanager.h"
 #include <QJsonObject>
 #include <QSqlRecord>
 #include <QVariant>
+#include <QFileInfo>
 
 using itchio::Content;
 
@@ -20,10 +22,16 @@ Content(t)
     identifier = object["id"].toInt();
     title = object["title"].toString();
     author = object["author"].toString();
+    coverImageURL = object["cover_url"].toString();
     published = object["published"].toBool();
     creationDate = QDateTime::fromString(object["created_at"].toString(), DATE_TIME_FORMAT);
     publishDate = QDateTime::fromString(object["published_at"].toString(), DATE_TIME_FORMAT);
     webPageURL = object["url"].toString();
+
+    //TODO Complete me.
+//    tags = 0;
+//    status = 0;
+//    access = 0;
 
     downloadCount = object["downloads_count"].toInt();
     viewCount = object["views_count"].toInt();
@@ -43,6 +51,7 @@ Content(t)
     identifier = record.value(record.indexOf("identifier")).toUInt();
     title = record.value(record.indexOf("title")).toString();
     author = record.value(record.indexOf("author")).toString();
+    coverImageURL = record.value(record.indexOf("coverImageURL")).toString();
     published = record.value(record.indexOf("published")).toBool();
     creationDate = QDateTime::fromString(record.value(record.indexOf("creationDate")).toString(), DATE_TIME_FORMAT);
     publishDate = QDateTime::fromString(record.value(record.indexOf("publishDate")).toString(), DATE_TIME_FORMAT);
@@ -58,4 +67,20 @@ Content(t)
     purchaseCount = record.value(record.indexOf("purchaseCount")).toUInt();
 
     platforms = static_cast<Platforms>(record.value(record.indexOf("platforms")).toInt());
+}
+/*!
+ * Returns the \a identifier as a hexadecimal value.
+ */
+QString Content::identifierToHex(const int identifier)
+{
+    // When the length of the hexadecimal value is shorter than 'IDENTIFIER_HEXADECIMAL_LENGTH',
+    // then it's padded with leading zeros.
+    return QString("%1").arg(identifier, IDENTIFIER_HEXADECIMAL_LENGTH, 16, QChar('0')).toUpper();
+}
+/*!
+ * Returns the cover image location in the cache directory for the content with the specified \a identifier.
+ */
+QString Content::coverImageCacheLocation(const int identifier)
+{
+    return QString("%1%2").arg(ContentManager::coverImageFilePrefix(), identifierToHex(identifier));
 }

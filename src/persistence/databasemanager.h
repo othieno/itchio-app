@@ -1,19 +1,21 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
-#include "manager.h"
+#include <QObject>
 #include "database.h"
 
 namespace itchio {
 
-class DatabaseManager : public Manager
+class Application;
+
+class DatabaseManager final : public QObject
 {
     friend class Application;
 public:
-    static Database createDatabase(const QString& name);
-    static Database createInMemoryDatabase();
+    static Database createDatabase();
+    static Database createDatabase(const QString& fileName);
 
-    static QString databaseLocation();
+    static QString databaseCacheLocation();
 private:
     explicit DatabaseManager(Application& application);
 };

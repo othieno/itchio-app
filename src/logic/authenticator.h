@@ -1,7 +1,6 @@
 #ifndef AUTHENTICATOR_H
 #define AUTHENTICATOR_H
 
-#include "abstractcontroller.h"
 #include "window.h"
 #include <QNetworkReply>
 
@@ -10,7 +9,7 @@ namespace itchio {
 class NetworkManager;
 class User;
 
-class Authenticator Q_DECL_FINAL : public AbstractController
+class Authenticator final : public QObject
 {
     Q_OBJECT
     friend class Application;

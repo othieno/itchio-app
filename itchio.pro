@@ -40,7 +40,8 @@ HEADERS += \
     src/presentation/views/libraryview.h \
     src/presentation/views/settingsview.h \
     src/logic/domain/content.h \
-    src/presentation/ui/framelesswindow.h
+    src/presentation/ui/framelesswindow.h \
+    src/logic/manager/sessionmanager.h
 
 SOURCES += \
     src/itchio.cpp \
@@ -68,7 +69,8 @@ SOURCES += \
     src/presentation/ui/titlebar.cpp \
     src/presentation/ui/window.cpp \
     src/logic/domain/content.cpp \
-    src/logic/domain/price.cpp
+    src/logic/domain/price.cpp \
+    src/logic/manager/sessionmanager.cpp
 
 FORMS += \
     src/presentation/forms/authenticationview.ui \

@@ -23,48 +23,13 @@ selectedIndex_(model_.index(0, 0))
     connect(ui_.contentTitles, &QListView::clicked, this, &LibraryView::onItemSelected);
     connect(&delayTimer_, &QTimer::timeout, this, &LibraryView::onUpdateDetails);
     connect(&model_, &LibraryModel::updated, this, &LibraryView::onLibraryUpdated);
+    connect(&model_, &LibraryModel::coverImageChanged, this, &LibraryView::onCoverImageChanged);
 
     delayTimer_.setSingleShot(true);
     delayTimer_.setInterval(LibraryView::DELAY_TIMER_INTERVAL);
 
     // Update the details section.
     onUpdateDetails();
-}
-/*!
- * \brief Starts the delay timer when a new item is selected.
- * When the delay timer times out, then the detailed view is updated.
- */
-void LibraryView::onItemSelected(const QModelIndex& index)
-{
-    if (selectedIndex_ != index)
-    {
-        selectedIndex_ = index;
-        delayTimer_.start();
-    }
-}
-/*!
- * \brief Updates the detailed view.
- */
-void LibraryView::onUpdateDetails()
-{
-    const auto& content = model_.contentAt(selectedIndex_);
-
-//    ui_.contentDetails->hide();
-
-//    ui_.contentCoverImage->setPixmap(QPixmap("/home/jeremy/devel/enterprise/itchio-app/prototype.user/000001.jpg"));
-    ui_.contentTitle->setText(content.title);
-    ui_.contentSubtitle->setText(createSubtitleString(content));
-//    ui_.contentPlatforms->setText(createPlatformsString(content.platforms));
-    ui_.contentTagline->setText(content.tagline);
-
-//    ui_.contentDetails->show();
-}
-/*!
- * \brief Updates the view when the library is updated.
- */
-void LibraryView::onLibraryUpdated()
-{
-    //TODO Implement me.
 }
 /*!
  * Creates a subtitle string.
@@ -85,3 +50,49 @@ QString LibraryView::createPlatformsString(const Content::Platforms&)
     return QString("Available for Windows, OSX and Linux");
 }
 #endif
+/*!
+ * \brief Starts the delay timer when a new item is selected.
+ * When the delay timer times out, then the detailed view is updated.
+ */
+void LibraryView::onItemSelected(const QModelIndex& index)
+{
+    if (selectedIndex_ != index)
+    {
+        selectedIndex_ = index;
+        delayTimer_.start();
+    }
+}
+/*!
+ * \brief Updates the detailed view.
+ */
+void LibraryView::onUpdateDetails()
+{
+    const auto& content = model_.contentAt(selectedIndex_);
+
+    currentContentIdentifier_ = content.identifier;
+
+//    ui_.contentDetails->hide();
+
+    ui_.contentCoverImage->setPixmap(QPixmap(content.coverImageCacheLocation()));
+    ui_.contentTitle->setText(content.title);
+    ui_.contentSubtitle->setText(createSubtitleString(content));
+//    ui_.contentPlatforms->setText(createPlatformsString(content.platforms));
+    ui_.contentTagline->setText(content.tagline);
+
+//    ui_.contentDetails->show();
+}
+/*!
+ * \brief Updates the view when the library is updated.
+ */
+void LibraryView::onLibraryUpdated()
+{
+    //TODO Implement me.
+}
+/*!
+ * \brief Updates the cover image when it has been changed.
+ */
+void LibraryView::onCoverImageChanged(const int identifier)
+{
+    if (currentContentIdentifier_ == identifier)
+        ui_.contentCoverImage->setPixmap(QPixmap(Content::coverImageCacheLocation(identifier)));
+}

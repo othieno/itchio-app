@@ -12,7 +12,6 @@ using itchio::Authenticator;
  * \brief Instantiates an Authenticator that is attached to the specified \a application.
  */
 Authenticator::Authenticator(Application& application) :
-AbstractController(application),
 networkManager_(application.networkManager())
 {
     connect(&networkManager_, &NetworkManager::receivedUserAuthentication, this, &Authenticator::onReceivedUserAuthentication);

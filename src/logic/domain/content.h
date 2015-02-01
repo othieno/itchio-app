@@ -63,10 +63,16 @@ struct Content
     Q_DECLARE_FLAGS(Platforms, Platform)
     static QLinkedList<Platform> listOfContentPlatforms();
 
+    static QString identifierToHex(const int identifier);
+    static QString coverImageCacheLocation(const int identifier);
+
     const Type     type;
     unsigned int   identifier;
+    inline QString identifierToHex() const { return identifierToHex(identifier); }
     QString        title;
     QString        author;
+    QString        coverImageURL;
+    inline QString coverImageCacheLocation() const { return coverImageCacheLocation(identifier); }
     bool           published;
     QDateTime      creationDate;
     QDateTime      publishDate;
@@ -82,7 +88,16 @@ struct Content
 
     Platforms      platforms;
 
+    /*!
+     * The default date-time format.
+     */
     constexpr static const char* const DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
+    /*!
+     * The number of characters used to represent the identifier's hexadecimal value.
+     * For example, all signed 32-bit integers can be represented with a hex value
+     * consisting of 8 characters.
+     */
+    constexpr static unsigned int IDENTIFIER_HEXADECIMAL_LENGTH = sizeof(Content::identifier) << 1;
 protected:
     explicit Content(const Type& type);
     Content(const Type& type, const QJsonObject& jsonObject);

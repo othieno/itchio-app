@@ -20,8 +20,7 @@ public:
     Settings& settings();
     const Settings& settings() const;
 
-    Window& window();
-    const Window& window() const;
+    void showWindow();
 
     DatabaseManager& databaseManager();
     const DatabaseManager& databaseManager() const;

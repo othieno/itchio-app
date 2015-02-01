@@ -25,6 +25,7 @@ private:
     Ui::LibraryView ui_;
     LibraryModel model_;
 
+    int currentContentIdentifier_;
     QModelIndex selectedIndex_;
     QTimer delayTimer_;
 
@@ -38,6 +39,7 @@ private slots:
     void onItemSelected(const QModelIndex& index);
     void onUpdateDetails();
     void onLibraryUpdated();
+    void onCoverImageChanged(const int contentIdentifier);
 };
 
 } // namespace itchio

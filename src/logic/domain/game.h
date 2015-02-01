@@ -35,7 +35,6 @@ struct Game : public Content
     explicit Game(const QJsonObject& jsonObject);
     explicit Game(const QSqlRecord& sqlRecord);
 
-    QString coverImageURL;
     QString tagline; // a.k.a. shortText.
     QString type; //TODO Find out exactly what a game 'type' is. Is it a genre? Or does it refer to a content type?
     Genres  genres;

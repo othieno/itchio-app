@@ -56,36 +56,12 @@ void GameDAO::dropTables()
  */
 void GameDAO::insertMockRecords()
 {
-    const std::array<QString, 66 * 2> entries =
+    const std::array<QString, 28 * 2> entries =
     {
         "Metal Gear Solid V: The Phantom Pain","Kojima Productions",
         "Asimov",                  "After Dark Studios",
         "Pelagic",                 "After Dark Studios",
         "Naut",                    "The Klondike Collective",
-        "PARTICLE MACE",           "Andy Wallace",
-        "Glass Wing",              "From Soy Sauce",
-        "Super Galaxy Squadron",   "Nick Clinkscales",
-        "Precipice",               "Ryan Trawick",
-        "GLASS CANNONS",           "Alpha Six Productions",
-        "Sandstorm",               "Daniel Linssen",
-        "C64anabalt",              "Paul Koller",
-        "LISA: The Painful RPG",   "dingalingboy",
-        "PARTICLE MACE",           "Andy Wallace",
-        "Glass Wing",              "From Soy Sauce",
-        "Super Galaxy Squadron",   "Nick Clinkscales",
-        "Precipice",               "Ryan Trawick",
-        "GLASS CANNONS",           "Alpha Six Productions",
-        "Sandstorm",               "Daniel Linssen",
-        "C64anabalt",              "Paul Koller",
-        "LISA: The Painful RPG",   "dingalingboy",
-        "PARTICLE MACE",           "Andy Wallace",
-        "Glass Wing",              "From Soy Sauce",
-        "Super Galaxy Squadron",   "Nick Clinkscales",
-        "Precipice",               "Ryan Trawick",
-        "GLASS CANNONS",           "Alpha Six Productions",
-        "Sandstorm",               "Daniel Linssen",
-        "C64anabalt",              "Paul Koller",
-        "LISA: The Painful RPG",   "dingalingboy",
         "PARTICLE MACE",           "Andy Wallace",
         "Glass Wing",              "From Soy Sauce",
         "Super Galaxy Squadron",   "Nick Clinkscales",

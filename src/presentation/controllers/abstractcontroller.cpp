@@ -1,3 +1,5 @@
+#ifdef DEPRECATED
+
 #include "abstractcontroller.h"
 #include "application.h"
 
@@ -11,3 +13,5 @@ QString AbstractController::applicationName() const
 {
     return application_.applicationName();
 }
+
+#endif

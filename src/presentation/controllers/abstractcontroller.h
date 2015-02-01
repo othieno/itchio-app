@@ -1,3 +1,6 @@
+//TODO Remove this.
+#ifdef DEPRECATED
+
 #ifndef ABSTRACTCONTROLLER_H
 #define ABSTRACTCONTROLLER_H
 
@@ -21,3 +24,5 @@ protected:
 } // namespace itchio
 
 #endif // ABSTRACTCONTROLLER_H
+
+#endif

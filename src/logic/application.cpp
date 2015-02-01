@@ -46,18 +46,12 @@ const Settings& Application::settings() const
     return settings_;
 }
 /*!
- * \brief Returns the application's main window.
+ * \brief Displays the application's main window.
  */
-Window& Application::window()
+void Application::showWindow()
 {
-    return window_;
-}
-/*!
- * \brief Returns a const-reference to the application's main window.
- */
-const Window& Application::window() const
-{
-    return window_;
+    //TODO Load window settings before displaying it.
+    window_.showMaximized();
 }
 /*!
  * \brief Returns the application's database manager.
@@ -120,7 +114,7 @@ const ContentManager& Application::contentManager() const
  */
 QString Application::dataLocation()
 {
-    //TODO Replace this statement with the commented block below.
+    //TODO Replace this statement with the commented block below when done debugging.
     return QString("itch.user");
 
 /*
@@ -142,8 +136,8 @@ bool Application::createDataDirectories()
     const auto& locations =
     {
         dataLocation(),
-        DatabaseManager::databaseLocation(),
-        ContentManager::cacheLocation(),
+        DatabaseManager::databaseCacheLocation(),
+        ContentManager::fileCacheLocation(),
     };
     for (const auto& location : locations)
     {
@@ -201,7 +195,6 @@ void Application::onUserSessionCreated(const User& user)
     }
 
     contentManager_.setUser(user);
-    window_.showMaximized();
 }
 /*!
  * \brief Performs last-second operations before the application quits.

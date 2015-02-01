@@ -1,21 +1,17 @@
 #include "networkmanager.h"
 #include <QUrlQuery>
+#include <QFileInfo>
 
 using itchio::NetworkManager;
 
 /*!
  * \brief Instantiates an NetworkManager that is attached to a parent \a application.
  */
-NetworkManager::NetworkManager(Application& application) :
-Manager(application),
+NetworkManager::NetworkManager(Application&) :
 apiServerStatus_(ApiServerStatus::Down),
 operationMode_(OperationMode::Offline)
 {
-    connect
-    (
-        &networkAccessManager_, &QNetworkAccessManager::networkAccessibleChanged,
-        this,                   &NetworkManager::onNetworkAccessibleChanged
-    );
+    connect(this, &NetworkManager::networkAccessibleChanged, this, &NetworkManager::onNetworkAccessibleChanged);
 }
 /*!
  * \brief Initializes the network manager.
@@ -139,6 +135,48 @@ void NetworkManager::setApiServerStatus(const ApiServerStatus&)
 void NetworkManager::setOperationMode(const OperationMode&)
 {
     //TODO Implement me.
+}
+/*!
+ * \brief Downloads the file at the given \a fileURL and stores it with the specified \a fileName.
+ */
+void NetworkManager::download(const QString& fileURL, const QString& fileName, const bool overwrite)
+{
+    const QFileInfo fileInfo(fileName);
+    if ((!overwrite && fileInfo.exists()) || (overwrite && fileInfo.exists() && !fileInfo.isWritable()) || (networkAccessible() != QNetworkAccessManager::Accessible))
+        return;
+    else
+    {
+        QFile* const destination = new QFile(fileName, this);
+        if (destination != nullptr && destination->open(QIODevice::WriteOnly))
+        {
+            auto* reply = networkAccessManager_.get(QNetworkRequest(QUrl(fileURL)));
+            if (reply != nullptr)
+            {
+                connect(reply, &QNetworkReply::readyRead, [reply, destination]()
+                {
+                    destination->write(reply->readAll());
+                });
+    /*
+                connect(reply, &QNetworkReply::downloadProgress, [reply, destination](qint64 received, qint64 total)
+                {
+                    Q_UNUSED(received);
+                    Q_UNUSED(total);
+                    qDebug() << QString("%1 MB").arg(received/1024);
+                });
+    */
+                connect(reply, &QNetworkReply::finished, [this, reply, destination]()
+                {
+                    destination->close();
+                    destination->deleteLater();
+
+                    reply->close();
+                    reply->deleteLater();
+
+                    emit fileDownloaded(destination->fileName());
+                });
+            }
+        }
+    }
 }
 /*!
  * \brief Handles the 'QNetworkAccessManager::networkAccessibleChanged' signal.

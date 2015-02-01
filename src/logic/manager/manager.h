@@ -1,3 +1,6 @@
+//TODO Remove this.
+#ifdef DEPRECATED
+
 #ifndef MANAGER_H
 #define MANAGER_H
 
@@ -7,6 +10,7 @@ namespace itchio {
 
 class Application;
 
+//TODO Remove this class. It is a code smell.
 class Manager : public QObject
 {
 public:
@@ -20,3 +24,5 @@ protected:
 } // namespace itchio
 
 #endif // MANAGER_H
+
+#endif

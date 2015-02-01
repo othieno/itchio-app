@@ -1,10 +1,11 @@
 #include "game.h"
-#include <sstream>
-#include <QJsonArray>
 #include <QJsonObject>
-#include <QJsonDocument>
 #include <QSqlRecord>
 #include <QVariant>
+
+//TODO Remove these when done debugging.
+#include <QJsonDocument>
+#include <QJsonArray>
 
 using itchio::Game;
 
@@ -67,7 +68,6 @@ Game(QJsonDocument::fromJson(SAMPLE).object()["games"].toArray()[0].toObject())
 Game::Game(const QJsonObject& object) :
 Content(Type::Game, object)
 {
-    coverImageURL = object["cover_url"].toString();
     tagline = object["short_text"].toString();
     type = object["type"].toString();
 #ifdef TODO
@@ -84,7 +84,6 @@ Content(Type::Game, object)
 Game::Game(const QSqlRecord& record) :
 Content(Type::Game, record)
 {
-    coverImageURL = record.value(record.indexOf("coverImageURL")).toString();
     tagline = record.value(record.indexOf("tagline")).toString();
     type = record.value(record.indexOf("type")).toString();
     genres = static_cast<Genres>(record.value(record.indexOf("genres")).toInt());
