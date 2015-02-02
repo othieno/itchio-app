@@ -1,29 +1,40 @@
-#ifdef TODO
 #ifndef SESSIONMANAGER_H
 #define SESSIONMANAGER_H
 
-#include "manager.h"
+#include <QObject>
+#include "user.h"
 
 namespace itchio {
 
-class Application;
+class NetworkManager;
 
-class SessionManager : public Manager
+class SessionManager : public QObject
 {
+    Q_OBJECT
     friend class Application;
 public:
-    void authenticate();
-private:
-    explicit SessionManager(Application& application);
+    const User& user() const;
+    const QString& userDatabaseLocation() const;
 
+    void authenticateUser(const QString& username, const QString& password, const bool passwordIsApiKey = false);
+public slots:
+    void closeUserSession();
+private:
+    explicit SessionManager(NetworkManager& networkManager);
+
+    NetworkManager& networkManager_;
     User user_;
+    QString userDatabaseLocation_;
+//TODO    Database userDatabase_;
+private slots:
+    void openUserSession();
 signals:
-    void authenticated(const User& user);
-    void sessionOpened(const User& user);
-    void sessionClosed();
+    void userAuthenticated(const User& user);
+    void userAuthenticationFailed(const QString& errorMessage);
+    void userSessionOpened(const User& user);
+    void userSessionClosed();
 };
 
 } // namespace itchio
 
 #endif // SESSIONMANAGER_H
-#endif

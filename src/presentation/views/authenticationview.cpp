@@ -6,7 +6,7 @@ using itchio::AuthenticationView;
 
 AuthenticationView::AuthenticationView(ModalDialog& dialog, Application& application) :
 AbstractView(dialog),
-authenticator_(application.authenticator()),
+sessionManager_(application.sessionManager()),
 settings_(application.settings()),
 usernameValidator_(/*QRegExp("")*/), //TODO Find the regular expression that accepts a valid username.
 enableApiKeyAuthentication_(false)
@@ -18,8 +18,8 @@ enableApiKeyAuthentication_(false)
     ui_.rememberUserButton->hide();
 
     connect(ui_.authenticateButton, &QPushButton::clicked, this, &AuthenticationView::onAuthenticateButtonClicked);
-    connect(&authenticator_,   &Authenticator::authenticated, &dialog, &ModalDialog::accept);
-    connect(&authenticator_,   &Authenticator::authenticationFailed, this, &AuthenticationView::onAuthenticationFailed);
+    connect(&sessionManager_, &SessionManager::userAuthenticated, &dialog, &ModalDialog::accept);
+    connect(&sessionManager_, &SessionManager::userAuthenticationFailed, this, &AuthenticationView::onUserAuthenticationFailed);
 
     // If user credentials were previously saved and are still valid, use them.
     auto savedUsername = settings_.username();
@@ -119,12 +119,12 @@ void AuthenticationView::onAuthenticateButtonClicked()
 
     const auto& key = enableApiKeyAuthentication_ ? settings_.apiKey() : password();
 
-    authenticator_.authenticate(username(), key, enableApiKeyAuthentication_);
+    sessionManager_.authenticateUser(username(), key, enableApiKeyAuthentication_);
 }
 /*!
- * \brief Handles authentication failure.
+ * \brief Handles a user authentication failure.
  */
-void AuthenticationView::onAuthenticationFailed(const QString& message)
+void AuthenticationView::onUserAuthenticationFailed(const QString& message)
 {
     setStatusMessage(message);
     disableInputComponents(false);

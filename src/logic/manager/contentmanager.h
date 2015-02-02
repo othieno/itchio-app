@@ -1,25 +1,22 @@
 #ifndef CONTENTMANAGER_H
 #define CONTENTMANAGER_H
 
-#include "user.h"
 #include "database.h"
 #include "gamedao.h"
 #include <QTimer>
 
 namespace itchio {
 
+class User;
 class Application;
 class NetworkManager;
+class SessionManager;
 
 class ContentManager final : public QObject
 {
     Q_OBJECT
+    friend class Application;
 public:
-    explicit ContentManager(Application& application);
-
-    const User& user() const;
-    void setUser(const User& user);
-
     bool isAutoUpdateEnabled() const;
     void enableAutoUpdate(const bool enable = true);
 
@@ -32,22 +29,28 @@ public:
 
     static QString fileCacheLocation();
     static QString coverImageFilePrefix();
+    static QString avatarImageFilePrefix();
 
     constexpr static int MINIMUM_AUTO_UPDATE_INTERVAL = 3  * 1000; // 3 seconds.
     constexpr static int DEFAULT_AUTO_UPDATE_INTERVAL = 60 * 1000; // 1 minute
 public slots:
-    void updateUserContent();
     void emptyFileCache();
 
 private:
+    ContentManager(NetworkManager& networkManager, SessionManager& sessionManager);
+
+    void downloadUserContent(const User& user);
+
     QTimer autoUpdateTimer_;
-    User user_;
 
     NetworkManager& networkManager_;
+    SessionManager& sessionManager_;
 
     Database contentDatabase_;
     GameDAO gameDAO_;
 private slots:
+    void onUserSessionOpened(const User& user);
+    void onUserSessionClosed();
     void onFileDownloaded(const QString& fileName);
 signals:
     /*!

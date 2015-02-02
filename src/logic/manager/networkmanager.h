@@ -29,8 +29,10 @@ public:
     const ApiServerStatus& apiServerStatus() const;
     const OperationMode& operationMode() const;
 
-    void requestUserAuthentication(const QString& username, const QString& password);
-    void requestUserProfile(const QString& key);
+    QNetworkReply* requestUserAuthentication(const QString& username, const QString& password);
+    QNetworkReply* requestUserProfile(const QString& key);
+
+
     void requestUserGames(const QString& key);
 
     void requestGamePurchases(const QString& key, const unsigned int gameIdentifier);
@@ -43,14 +45,14 @@ public:
 
     static constexpr const char* API_URL = "https://itch.io/api/1";
 private:
-    explicit NetworkManager(Application& application);
+    explicit NetworkManager(const QString& userAgent);
+
+    QNetworkRequest getApiRequest(const QString& path, const QString& key = QString()) const;
 
     void setApiServerStatus(const ApiServerStatus& status);
     void setOperationMode(const OperationMode& mode);
 
-    static QNetworkRequest createApiRequest(const QString& path);
-
-    QNetworkAccessManager networkAccessManager_;
+    const QString userAgent_;
     ApiServerStatus apiServerStatus_;
     OperationMode operationMode_;
 private slots:
@@ -61,8 +63,6 @@ signals:
     void apiServerStatusChanged(const ApiServerStatus& status);
     void operationModeChanged(const OperationMode& mode);
 
-    void receivedUserAuthentication(const QNetworkReply::NetworkError& error, const QByteArray& response);
-    void receivedUserProfile(const QNetworkReply::NetworkError& error, const QByteArray& response);
     void receivedUserGames(const QNetworkReply::NetworkError& error, const QByteArray& response);
 
     void receivedGamePurchases(const QNetworkReply::NetworkError& error, const QByteArray& response);

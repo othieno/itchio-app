@@ -9,17 +9,17 @@ namespace itchio {
 
 class ModalDialog;
 class Application;
-class Authenticator;
+class SessionManager;
 class Settings;
 
-class AuthenticationView Q_DECL_FINAL : public AbstractView
+class AuthenticationView final : public AbstractView
 {
     Q_OBJECT
     friend class ModalDialog;
 public:
 
-    inline bool isResizable() const Q_DECL_OVERRIDE { return false; }
-    inline bool isCentered() const Q_DECL_OVERRIDE { return true; }
+    inline bool isResizable() const override { return false; }
+    inline bool isCentered() const override { return true; }
 private:
     AuthenticationView(ModalDialog& dialog, Application& application);
     void disableInputComponents(const bool disable = true);
@@ -30,14 +30,14 @@ private:
     void setStatusMessage(const QString& message) const;
 
     Ui::AuthenticationView ui_;
-    Authenticator& authenticator_;
+    SessionManager& sessionManager_;
     const Settings& settings_;
     const QRegExpValidator usernameValidator_;
     bool enableApiKeyAuthentication_;
 private slots:
     void onInputChanged();
     void onAuthenticateButtonClicked();
-    void onAuthenticationFailed(const QString& message);
+    void onUserAuthenticationFailed(const QString& message);
 };
 
 } // namespace itchio

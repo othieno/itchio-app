@@ -12,7 +12,6 @@ class DatabaseManager final : public QObject
 {
     friend class Application;
 public:
-    static Database createDatabase();
     static Database createDatabase(const QString& fileName);
 
     static QString databaseCacheLocation();

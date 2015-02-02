@@ -2,6 +2,9 @@
 #define USER_H
 
 #include <QString>
+#include <QDateTime>
+
+class QJsonObject;
 
 namespace itchio {
 
@@ -10,12 +13,21 @@ namespace itchio {
  */
 struct User
 {
+    User() = default;
+    explicit User(const QJsonObject& jsonObject);
+
     unsigned int identifier;
-
-    QString username;
-    QString key;
-
+    QString name;
     QString displayName;
+    QString key;
+    QString avatarImageURL;
+    QString avatarImageCacheLocation() const;
+    QString webPageURL;
+
+    QDateTime memberSince;
+    QDateTime lastUpdated;
+
+    QString databaseFileLocation() const;
 };
 
 } // namespace itchio

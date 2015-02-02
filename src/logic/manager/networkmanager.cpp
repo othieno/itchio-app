@@ -5,9 +5,10 @@
 using itchio::NetworkManager;
 
 /*!
- * \brief Instantiates an NetworkManager that is attached to a parent \a application.
+ * \brief Instantiates an NetworkManager with the specified user agent \a userAgent.
  */
-NetworkManager::NetworkManager(Application&) :
+NetworkManager::NetworkManager(const QString& userAgent) :
+userAgent_(userAgent),
 apiServerStatus_(ApiServerStatus::Down),
 operationMode_(OperationMode::Offline)
 {
@@ -19,7 +20,7 @@ operationMode_(OperationMode::Offline)
  */
 void NetworkManager::initialize()
 {
-    const bool accessible = networkAccessManager_.networkAccessible() == QNetworkAccessManager::Accessible;
+    const bool accessible = networkAccessible() == QNetworkAccessManager::Accessible;
     if (accessible)
     {
         // TODO Block signals during the initialization phase?
@@ -46,47 +47,70 @@ const NetworkManager::OperationMode& NetworkManager::operationMode() const
     return operationMode_;
 }
 /*!
+ * \brief Returns a correctly formed API request to the given \a path using the specified API \a key.
+ */
+QNetworkRequest NetworkManager::getApiRequest(const QString& path, const QString& key) const
+{
+    //TODO Sanitze the path even more, i.e. remove any leading slashes.
+    QString sanitizedPath = path.trimmed();
+
+    const auto& url = QUrl
+    (
+        key.isEmpty() ?
+        QString("%1/%2").arg(NetworkManager::API_URL, sanitizedPath) :
+        QString("%1/%2/%3").arg(NetworkManager::API_URL, key, sanitizedPath)
+    );
+
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::UserAgentHeader, userAgent_);
+
+    return request;
+}
+/*!
  * \brief Makes a request to authorize the specified \a username and \a password.
  */
-void NetworkManager::requestUserAuthentication(const QString& username, const QString& password)
+QNetworkReply* NetworkManager::requestUserAuthentication(const QString& username, const QString& password)
 {
     // This variable makes sure requests are coalesced to prevent flooding the server.
-    static bool IS_REQUEST_PENDING = false;
+    static bool isRequestPending = false;
 
-    if (!IS_REQUEST_PENDING)//TODO && operationMode_ != OperationMode::Offline)
+    QNetworkReply* reply = nullptr;
+
+    if (!isRequestPending)
     {
-        const auto& request = createApiRequest("/login");
+        auto request = getApiRequest("login");
+
+        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
         QUrlQuery query;
-        query.setQueryItems({{"username", username}, {"password", password}, {"source", "desktop"}});
+        query.setQueryItems
+        ({
+            {"username", username},
+            {"password", password},
+            {"source", "desktop"}
+        });
 
-        auto* const reply = networkAccessManager_.post(request, query.toString(QUrl::FullyEncoded).toUtf8());
+        reply = post(request, query.toString(QUrl::FullyEncoded).toUtf8());
         if (reply != nullptr)
         {
-            // Coalesce authentication requests to prevent flooding the server.
-            IS_REQUEST_PENDING = true;
-
-            connect(reply, &QNetworkReply::finished, [this, reply]
-            {
-                const auto& error = reply->error();
-                const auto& response =
-                error == QNetworkReply::NoError ? reply->readAll() : reply->errorString().toUtf8();
-
-                emit receivedUserAuthentication(error, response);
-                reply->deleteLater();
-
-                IS_REQUEST_PENDING = false;
-            });
+            isRequestPending = true;
+            connect(reply, &QNetworkReply::finished, [](){ isRequestPending = false; });
         }
     }
+    return reply;
 }
 /*!
  * \brief Makes a request to acquire the profile of the user with the specified \a key.
  */
-void NetworkManager::requestUserProfile(const QString&)
+QNetworkReply* NetworkManager::requestUserProfile(const QString& key)
 {
-    //TODO Implement me.
+    return get(getApiRequest("me", key));
 }
+
+
+
+
+
 /*!
  * \brief Makes a request to acquire the set of games owned by the user with the specified \a key.
  */
@@ -149,7 +173,7 @@ void NetworkManager::download(const QString& fileURL, const QString& fileName, c
         QFile* const destination = new QFile(fileName, this);
         if (destination != nullptr && destination->open(QIODevice::WriteOnly))
         {
-            auto* reply = networkAccessManager_.get(QNetworkRequest(QUrl(fileURL)));
+            auto* reply = get(QNetworkRequest(QUrl(fileURL)));
             if (reply != nullptr)
             {
                 connect(reply, &QNetworkReply::readyRead, [reply, destination]()
@@ -184,7 +208,7 @@ void NetworkManager::download(const QString& fileURL, const QString& fileName, c
 void NetworkManager::onNetworkAccessibleChanged()
 {
     //TODO Complete me.
-    const bool accessible = networkAccessManager_.networkAccessible() == QNetworkAccessManager::Accessible;
+    const bool accessible = networkAccessible() == QNetworkAccessManager::Accessible;
     Q_UNUSED(accessible);
 //    if (!accessible)
 //        setOperationMode(OperationMode::Offline);
@@ -193,22 +217,4 @@ void NetworkManager::onNetworkAccessibleChanged()
 
 
     //TODO Start a timer to attempt to reconnect after every few milliseconds.
-}
-/*!
- * \brief Returns a correctly formed API request with the given \a path.
- */
-QNetworkRequest NetworkManager::createApiRequest(const QString& path)
-{
-    constexpr const char* const CONTENT_TYPE = "application/x-www-form-urlencoded";
-    constexpr const char* const USER_AGENT = "itch.io app 0.0"; //TODO Move this to the application class? And maybe use the VERSION macro in the .pro file.
-
-    const QString& simplifiedPath = path.simplified();
-    const QString& format = simplifiedPath.at(0) == '/' ? "%1%2" : "%1/%2";
-
-    QNetworkRequest request(QUrl(QString(format).arg(NetworkManager::API_URL, simplifiedPath)));
-
-    request.setHeader(QNetworkRequest::ContentTypeHeader, CONTENT_TYPE);
-    request.setHeader(QNetworkRequest::UserAgentHeader, USER_AGENT);
-
-    return request;
 }

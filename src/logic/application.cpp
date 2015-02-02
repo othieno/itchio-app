@@ -10,7 +10,7 @@ using itchio::Settings;
 using itchio::Window;
 using itchio::DatabaseManager;
 using itchio::NetworkManager;
-using itchio::Authenticator;
+using itchio::SessionManager;
 using itchio::ContentManager;
 
 /*!
@@ -21,12 +21,12 @@ QApplication(argc, argv),
 settings_(QString("%1/%2.ini").arg(dataLocation(), applicationName()), QSettings::IniFormat),
 window_(*this),
 databaseManager_(*this),
-networkManager_(*this),
-authenticator_(*this),
-contentManager_(*this)
+networkManager_(userAgent()),
+sessionManager_(networkManager_),
+contentManager_(networkManager_, sessionManager_)
 {
     connect(this, &Application::aboutToQuit, this, &Application::onAboutToQuit);
-    connect(&authenticator_, &Authenticator::authenticated, this, &Application::onUserSessionCreated);
+    connect(&sessionManager_, &SessionManager::userSessionOpened, this, &Application::onUserSessionOpened);
 
     setApplicationStyle();
     networkManager_.initialize();
@@ -82,18 +82,18 @@ const NetworkManager& Application::networkManager() const
     return networkManager_;
 }
 /*!
- * \brief Returns the application's authentication service.
+ * \brief Returns the application's session manager.
  */
-Authenticator& Application::authenticator()
+SessionManager& Application::sessionManager()
 {
-    return authenticator_;
+    return sessionManager_;
 }
 /*!
- * \brief Returns a const-reference to the application's authentication service.
+ * \brief Returns a const-reference to the application's session manager.
  */
-const Authenticator& Application::authenticator() const
+const SessionManager& Application::sessionManager() const
 {
-    return authenticator_;
+    return sessionManager_;
 }
 /*!
  * \brief Returns the application's content manager.
@@ -108,6 +108,13 @@ ContentManager& Application::contentManager()
 const ContentManager& Application::contentManager() const
 {
     return contentManager_;
+}
+/*!
+ * \brief Returns the application's user agent string.
+ */
+QString Application::userAgent() const
+{
+    return QString("%1 app %2").arg(applicationName(), applicationVersion());
 }
 /*!
  * \brief Returns the path to the directory where the application stores persistent data.
@@ -184,17 +191,15 @@ void Application::setApplicationStyle()
     }
 }
 /*!
- * \brief Initializes the content manager with the specified \a user.
+ * \brief Handles the 'userSessionOpened' signal emitted by the session manager.
  */
-void Application::onUserSessionCreated(const User& user)
+void Application::onUserSessionOpened(const User& user)
 {
-    if (settings_.autoLogin() && (settings_.apiKey() != user.key || settings_.username() != user.username))
+    if (settings_.autoLogin() && (settings_.apiKey() != user.key || settings_.username() != user.name))
     {
         settings_.setApiKey(user.key);
-        settings_.setUsername(user.username);
+        settings_.setUsername(user.name);
     }
-
-    contentManager_.setUser(user);
 }
 /*!
  * \brief Performs last-second operations before the application quits.

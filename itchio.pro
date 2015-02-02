@@ -15,7 +15,6 @@ INCLUDEPATH += \
 
 HEADERS += \
     src/logic/application.h \
-    src/logic/authenticator.h \
     src/logic/settings.h \
     src/logic/domain/game.h \
     src/logic/domain/library.h \
@@ -24,7 +23,6 @@ HEADERS += \
     src/logic/domain/user.h \
     src/logic/manager/contentmanager.h \
     src/logic/manager/networkmanager.h \
-    src/logic/manager/manager.h \
     src/persistence/database.h \
     src/persistence/databasemanager.h \
     src/persistence/dao/abstractdao.h \
@@ -46,7 +44,6 @@ HEADERS += \
 SOURCES += \
     src/itchio.cpp \
     src/logic/application.cpp \
-    src/logic/authenticator.cpp \
     src/logic/settings.cpp \
     src/logic/domain/game.cpp \
     src/logic/domain/library.cpp \
@@ -54,7 +51,6 @@ SOURCES += \
     src/logic/domain/user.cpp \
     src/logic/manager/contentmanager.cpp \
     src/logic/manager/networkmanager.cpp \
-    src/logic/manager/manager.cpp \
     src/persistence/database.cpp \
     src/persistence/databasemanager.cpp \
     src/persistence/dao/gamedao.cpp \

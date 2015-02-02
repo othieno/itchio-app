@@ -6,7 +6,7 @@
 #include "window.h"
 #include "databasemanager.h"
 #include "networkmanager.h"
-#include "authenticator.h"
+#include "sessionmanager.h"
 #include "contentmanager.h"
 
 namespace itchio {
@@ -28,11 +28,13 @@ public:
     NetworkManager& networkManager();
     const NetworkManager& networkManager() const;
 
-    Authenticator& authenticator();
-    const Authenticator& authenticator() const;
+    SessionManager& sessionManager();
+    const SessionManager& sessionManager() const;
 
     ContentManager& contentManager();
     const ContentManager& contentManager() const;
+
+    QString userAgent() const;
 
     static QString dataLocation();
     static bool createDataDirectories();
@@ -49,10 +51,10 @@ private:
 
     DatabaseManager databaseManager_;
     NetworkManager networkManager_;
-    Authenticator authenticator_;
+    SessionManager sessionManager_;
     ContentManager contentManager_;
 private slots:
-    void onUserSessionCreated(const User& user);
+    void onUserSessionOpened(const User& user);
     void onAboutToQuit();
 };
 

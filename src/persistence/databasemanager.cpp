@@ -2,7 +2,6 @@
 #include "database.h"
 #include "application.h"
 #include <QSqlError>
-#include <QDir>
 
 using itchio::DatabaseManager;
 using itchio::Database;
@@ -15,28 +14,13 @@ DatabaseManager::DatabaseManager(Application& application)
     Q_UNUSED(application);
 }
 /*!
- * \brief Creates and opens a database in memory. If creation fails, an invalid database instance is returned.
- */
-Database DatabaseManager::createDatabase()
-{
-    Database database(":memory:");
-    if (!database.open())
-    {
-        const char* const error = qPrintable(database.lastError().databaseText());
-        qWarning("[DatabaseManager] WARN: Could not create in-memory database: '%s'.", error);
-
-        return Database();
-    }
-    return database;
-}
-/*!
  * \brief Creates and opens the database with the specified \a name.
  * If the database already exists, then it is only opened for use. If creation fails,
  * an invalid database instance is returned.
  */
 Database DatabaseManager::createDatabase(const QString& name)
 {
-    Database database(QString("%1/%2").arg(databaseCacheLocation(), name));
+    Database database(name);
     if (!database.open())
     {
         const char* const dbName = qPrintable(database.databaseName());
