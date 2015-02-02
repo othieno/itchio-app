@@ -38,7 +38,7 @@ HEADERS += \
     src/presentation/views/libraryview.h \
     src/presentation/views/settingsview.h \
     src/logic/domain/content.h \
-    src/presentation/ui/framelesswindow.h \
+    src/presentation/ui/framelesswidget.h \
     src/logic/manager/sessionmanager.h
 
 SOURCES += \

@@ -26,21 +26,21 @@ QDialog
 /*
  * The custom titlebar for frameless windows/dialogs.
  */
-#Titlebar
+#TitleBar
 {
     background:rgba(0, 0, 0, 0.5);
 }
-#Titlebar > *
+#TitleBar > *
 {
     color:#FFF;
     background:transparent;
     margin:0 0 0.25em 0;
 }
-#Titlebar > #title
+#TitleBar > #title
 {
     font:700 9pt Lato;
 }
-#Titlebar > #settingsButton
+#TitleBar > #settingsButton
 {
     height:1em;
     margin:0;

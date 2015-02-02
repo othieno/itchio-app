@@ -3,35 +3,25 @@
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
-
-class QSystemTrayIcon;
-namespace Ui { class Window; }
+#include "framelesswidget.h"
+#include "ui_window.h"
 
 namespace itchio {
 
-class Application;
 class AbstractView;
-class Titlebar;
 
-class Window Q_DECL_FINAL : public QMainWindow
+class Window final : public FramelessWidget<QMainWindow, Ui::Window>
 {
     friend class Application;
 private:
     explicit Window(Application& application);
-    ~Window();
 
-    void initializeUserInterface();
+    void initializeUi() override;
     void initializeContentViews();
     void initializeSystemTrayIcon();
 
-    void changeEvent(QEvent* const event) Q_DECL_OVERRIDE;
-    void showEvent(QShowEvent* const event) Q_DECL_OVERRIDE;
-    void closeEvent(QCloseEvent* const event) Q_DECL_OVERRIDE;
+    void closeEvent(QCloseEvent* const event) override;
 
-    Application& application_;
-
-    Ui::Window* ui_;
-    Titlebar* titlebar_;
     QSystemTrayIcon systemTrayIcon_;
 private slots:
     void onViewChanged(AbstractView& view);

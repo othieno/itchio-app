@@ -2,14 +2,12 @@
 #define MODALDIALOG_H
 
 #include <QDialog>
+#include "framelesswidget.h"
 #include "ui_modaldialog.h"
 
 namespace itchio {
 
-class Application;
-class Titlebar;
-
-class ModalDialog Q_DECL_FINAL : public QDialog
+class ModalDialog final : public FramelessWidget<QDialog, Ui::ModalDialog>
 {
 public:
     /*!
@@ -20,19 +18,18 @@ public:
         Authentication,
         Settings,
     };
-
-    static bool open(const View& view, Application& application, const QVariant& args = QVariant());
-
     void setCentered();
     void setResizable(const bool resizable);
+
+    static bool open(const View& view, Application& application, const QVariant& args = QVariant());
 private:
     ModalDialog(const ModalDialog::View& view, Application& application, const QVariant& args);
 
+    void initializeUi() override;
     void setView(const ModalDialog::View& view, Application& application, const QVariant& args);
-    void changeEvent(QEvent* const event) Q_DECL_OVERRIDE;
 
-    Ui::ModalDialog ui_;
-    Titlebar* const titlebar_;
+    const View view_;
+    const QVariant viewArguments_;
 };
 
 } // namespace itchio

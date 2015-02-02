@@ -1,5 +1,6 @@
 #include "titlebar.h"
-#include "ui_titlebar.h"
+#include "framelesswidget.h"
+#include "modaldialog.h"
 #include <QMouseEvent>
 
 //FIXME There is a bug when the window snaps to the desktop. The resize buttons should change
@@ -7,119 +8,173 @@
 
 //FIXME There is a bug that unmaximizes (and minimizes) the window when the minimize button is pressed.
 
-using itchio::Titlebar;
+using itchio::TitleBar;
 
 /*
- * Instantiates a Titlebar with the specified \a parent.
+ * Instantiates a TitleBar that interfaces with the specified \a widget.
+ * The widget is implied to be frameless.
  */
-Titlebar::Titlebar(QWidget& parent) :
-QWidget(&parent),
-parent_(parent),
-ui_(new Ui::Titlebar),
+TitleBar::TitleBar(QWidget& widget) :
+widget_(widget),
+widgetMovementToggled_(false),
 showResizeButtons_(true),
 showUnmaximizeButton_(false),
-showMaximizeButton_(false),
-requestTitlebarMove_(false)
+showMaximizeButton_(false)
 {
-    Q_ASSERT(ui_ != nullptr);
-    ui_->setupUi(this);
+    setupUi(this);
 
-    connect(ui_->minimizeButton,   &QPushButton::clicked, &parent_, &QWidget::showMinimized);
-    connect(ui_->unmaximizeButton, &QPushButton::clicked, [this](){ parent_.showNormal(); });
-    connect(ui_->maximizeButton,   &QPushButton::clicked, [this](){ parent_.showMaximized(); });
-    connect(ui_->closeButton,      &QPushButton::clicked, &parent_, &QWidget::close);
+    connect(minimizeButton,   &QPushButton::clicked, this, &TitleBar::onMinimizeButtonClicked);
+    connect(unmaximizeButton, &QPushButton::clicked, this, &TitleBar::onUnmaximizeButtonClicked);
+    connect(maximizeButton,   &QPushButton::clicked, this, &TitleBar::onMaximizeButtonClicked);
+    connect(closeButton,      &QPushButton::clicked, this, &TitleBar::onCloseButtonClicked);
 
-    onWindowStateChanged();
-}
-/*
- * Destroys the Titlebar instance.
- */
-Titlebar::~Titlebar()
-{
-    delete ui_;
-}
-/*
- * Sets the both the titlebar and parent window's \a title.
- */
-void Titlebar::setTitle(const QString& title)
-{
-    ui_->title->setText(title);
-    parent_.setWindowTitle(title);
-}
-/*
- * Sets the both the titlebar and parent window's \a title.
- */
-void Titlebar::onWindowStateChanged()
-{
-    showUnmaximizeButton_ = parent_.windowState().testFlag(Qt::WindowMaximized);
-    showMaximizeButton_ = !showUnmaximizeButton_;
+    widgetMovementDelayTimer_.setInterval(DELAY_TIMER_INTERVAL);
+    widgetMovementDelayTimer_.setSingleShot(true);
 
-    ui_->unmaximizeButton->setVisible(showResizeButtons_ && showUnmaximizeButton_);
-    ui_->maximizeButton->setVisible(showResizeButtons_ && showMaximizeButton_);
+    connect(&widgetMovementDelayTimer_, &QTimer::timeout, [this]()
+    {
+        widgetMovementToggled_ = true;
+        QApplication::setOverrideCursor(QCursor(Qt::ClosedHandCursor));
+    });
+
+    onWindowStateChange(widget_.windowState());
 }
 /*!
- * \brief Returns a pointer to the settings button.
+ * \brief Returns the settings button.
  */
-QPushButton* Titlebar::settingsButton() const
+QPushButton* TitleBar::settingsButton() const
 {
-    return ui_->settingsButton;
+    return Ui::TitleBar::settingsButton;
+}
+/*!
+ * \brief Updates the title bar icon when the window \a icon changes.
+ */
+void TitleBar::onWindowIconChange(const QIcon& icon)
+{
+    //TODO Implement me.
+    Q_UNUSED(icon);
+//    Ui::TitleBar::icon->setScaledContents(true);
+//    Ui::TitleBar::icon->setPixmap(icon.pixmap(icon.actualSize(QSize(32, 32))));
+//    Ui::TitleBar::icon->setPixmap(icon.pixmap(QSize(32, 32)));
+}
+/*!
+ * \brief Updates the title bar's title when the window \a title changes.
+ */
+void TitleBar::onWindowTitleChange(const QString& title)
+{
+    Ui::TitleBar::title->setText(title);
+}
+/*!
+ * \brief Updates the title bar when the window changes \a states.
+ */
+void TitleBar::onWindowStateChange(const Qt::WindowStates& states)
+{
+    showUnmaximizeButton_ = states.testFlag(Qt::WindowMaximized);
+    showMaximizeButton_ = !showUnmaximizeButton_;
+
+    unmaximizeButton->setVisible(showResizeButtons_ && showUnmaximizeButton_);
+    maximizeButton->setVisible(showResizeButtons_ && showMaximizeButton_);
 }
 /*
  * Shows the settings button if \a show is set to true, hides it otherwise.
  */
-void Titlebar::showSettingsButton(const bool show)
+void TitleBar::showSettingsButton(const bool show)
 {
-    ui_->settingsButton->setVisible(show);
+    settingsButton()->setVisible(show);
 }
 /*
  * Shows the minimize button if \a show is set to true, hides it otherwise.
  */
-void Titlebar::showMinimizeButton(const bool show)
+void TitleBar::showMinimizeButton(const bool show)
 {
-    ui_->minimizeButton->setVisible(show);
+    minimizeButton->setVisible(show);
 }
 /*
  * Shows the resize buttons if \a show is set to true, hides them otherwise.
  */
-void Titlebar::showResizeButtons(const bool show)
+void TitleBar::showResizeButtons(const bool show)
 {
     showResizeButtons_ = show;
-    onWindowStateChanged();
+    onWindowStateChange(widget_.windowState());
 }
 /*!
- * \brief Handles the Titlebar's mouse press \a event.
+ * \brief Handles the title bar's mouse click \a event.
  */
-void Titlebar::mousePressEvent(QMouseEvent* const event)
+void TitleBar::mousePressEvent(QMouseEvent* const event)
 {
     if (event->button() == Qt::MiddleButton)
-        parent_.showMinimized();
+        widget_.showMinimized();
     else
     {
-        requestTitlebarMove_ = true;
-        oldMousePosition_ = event->pos();
-        QApplication::setOverrideCursor(QCursor(Qt::ClosedHandCursor));
+        widgetInitialPosition_ = event->pos();
+        widgetMovementDelayTimer_.start();
     }
+
     QWidget::mousePressEvent(event);
 }
 /*!
- * \brief Handles the Titlebar's mouse release \a event.
+ * \brief Handles the title bar's mouse double-click \a event.
  */
-void Titlebar::mouseReleaseEvent(QMouseEvent* const event)
+void TitleBar::mouseDoubleClickEvent(QMouseEvent* const event)
 {
-    if (requestTitlebarMove_)
+    if (widget_.windowState().testFlag(Qt::WindowMaximized))
+        widget_.showMinimized();
+    else
+        widget_.showMaximized();
+
+    QWidget::mouseDoubleClickEvent(event);
+}
+/*!
+ * \brief Handles the title bar's mouse release \a event.
+ */
+void TitleBar::mouseReleaseEvent(QMouseEvent* const event)
+{
+    if (widgetMovementDelayTimer_.isActive())
+        widgetMovementDelayTimer_.stop();
+
+    if (widgetMovementToggled_)
     {
-        requestTitlebarMove_ = false;
+        widgetMovementToggled_ = false;
         QApplication::restoreOverrideCursor();
     }
+
     QWidget::mouseReleaseEvent(event);
 }
 /*!
- * \brief Handles the Titlebar's mouse movement \a event.
+ * \brief Handles the title bar's mouse movement \a event.
  */
-void Titlebar::mouseMoveEvent(QMouseEvent* const event)
+void TitleBar::mouseMoveEvent(QMouseEvent* const event)
 {
-    if (requestTitlebarMove_)
-        parent_.move(event->globalPos() - oldMousePosition_);
+    if (widgetMovementToggled_)
+        widget_.move(event->globalPos() - widgetInitialPosition_);
 
     QWidget::mouseMoveEvent(event);
+}
+/*!
+ * \brief Handles the minimize button's 'clicked' signal.
+ */
+void TitleBar::onMinimizeButtonClicked()
+{
+    widget_.showMinimized();
+}
+/*!
+ * \brief Handles the unmaximize button's 'clicked' signal.
+ */
+void TitleBar::onUnmaximizeButtonClicked()
+{
+    widget_.showNormal();
+}
+/*!
+ * \brief Handles the maximize button's 'clicked' signal.
+ */
+void TitleBar::onMaximizeButtonClicked()
+{
+    widget_.showMaximized();
+}
+/*!
+ * \brief Handles the close button's 'clicked' signal.
+ */
+void TitleBar::onCloseButtonClicked()
+{
+    widget_.close();
 }

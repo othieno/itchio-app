@@ -2,41 +2,46 @@
 #define TITLEBAR_H
 
 #include <QWidget>
-
-class QPushButton;
-namespace Ui { class Titlebar; }
+#include <QTimer>
+#include "ui_titlebar.h"
 
 namespace itchio {
 
-class Titlebar : public QWidget
+class TitleBar final : public QWidget, private Ui::TitleBar
 {
 public:
-    explicit Titlebar(QWidget& parent);
-    ~Titlebar();
-
-    void setTitle(const QString& title);
-    void onWindowStateChanged();
+    explicit TitleBar(QWidget& widget);
 
     QPushButton* settingsButton() const;
+
+    void onWindowIconChange(const QIcon& icon);
+    void onWindowTitleChange(const QString& title);
+    void onWindowStateChange(const Qt::WindowStates& states);
 
     void showSettingsButton(const bool show = true);
     void showMinimizeButton(const bool show = true);
     void showResizeButtons(const bool show = true);
 private:
-    void mousePressEvent(QMouseEvent* const event) Q_DECL_OVERRIDE;
-    void mouseReleaseEvent(QMouseEvent* const event) Q_DECL_OVERRIDE;
-    void mouseMoveEvent(QMouseEvent* const event) Q_DECL_OVERRIDE;
+    void mousePressEvent(QMouseEvent* const event) override;
+    void mouseDoubleClickEvent(QMouseEvent* const event) override;
+    void mouseReleaseEvent(QMouseEvent* const event) override;
+    void mouseMoveEvent(QMouseEvent* const event) override;
 
-    QWidget& parent_;
-
-    Ui::Titlebar* const ui_;
+    QWidget& widget_;
+    bool widgetMovementToggled_;
+    QPoint widgetInitialPosition_;
+    QTimer widgetMovementDelayTimer_;
 
     bool showResizeButtons_;
     bool showUnmaximizeButton_;
     bool showMaximizeButton_;
 
-    bool requestTitlebarMove_;
-    QPoint oldMousePosition_;
+    constexpr static int DELAY_TIMER_INTERVAL = 200;
+private slots:
+    void onMinimizeButtonClicked();
+    void onUnmaximizeButtonClicked();
+    void onMaximizeButtonClicked();
+    void onCloseButtonClicked();
 };
 
 } // namespace itchio
