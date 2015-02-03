@@ -34,20 +34,15 @@ QDialog
 {
     color:#FFF;
     background:transparent;
-    margin:0 0 0.25em 0;
+    margin:0 0 0.2em 0;
 }
 #TitleBar > #icon
 {
-	margin:0 0.1em 0.2em 0.2em;
+	margin:0 0.1em 0.2em 0.25em;
 }
 #TitleBar > #title
 {
     font:700 9pt Lato;
-}
-#TitleBar > #settingsButton
-{
-    height:1em;
-    margin:0;
 }
 /*
  * Scrollbars.

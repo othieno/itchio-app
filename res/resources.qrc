@@ -5,11 +5,11 @@
     <qresource prefix="/icon">
         <file alias="window">images/itchio-icon-200.png</file>
         <file alias="system-tray">images/itchio-icon-16.png</file>
-        <file alias="settings-button">images/material-design-icons/navigation/ic_more_horiz_white_48dp.png</file>
         <file alias="close-button">images/material-design-icons/navigation/ic_close_white_48dp.png</file>
         <file alias="minimize-button">images/material-design-icons/navigation/ic_expand_more_white_48dp.png</file>
-        <file alias="unmaximize-button">images/material-design-icons/navigation/ic_fullscreen_exit_white_48dp.png</file>
-        <file alias="maximize-button">images/material-design-icons/navigation/ic_fullscreen_white_48dp.png</file>
+        <file alias="unmaximize-button">images/material-design-icons/image/ic_filter_none_white_48dp.png</file>
+        <file alias="settings-button">images/material-design-icons/navigation/ic_menu_white_48dp.png</file>
+        <file alias="maximize-button">images/material-design-icons/toggle/ic_check_box_outline_blank_white_48dp.png</file>
     </qresource>
     <qresource prefix="/font">
         <file alias="Lato">fonts/Lato/Lato-Regular.ttf</file>
