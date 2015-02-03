@@ -51,11 +51,7 @@ QPushButton* TitleBar::settingsButton() const
  */
 void TitleBar::onWindowIconChange(const QIcon& icon)
 {
-    //TODO Implement me.
-    Q_UNUSED(icon);
-//    Ui::TitleBar::icon->setScaledContents(true);
-//    Ui::TitleBar::icon->setPixmap(icon.pixmap(icon.actualSize(QSize(32, 32))));
-//    Ui::TitleBar::icon->setPixmap(icon.pixmap(QSize(32, 32)));
+    Ui::TitleBar::icon->setPixmap(icon.pixmap(icon.actualSize(QSize(TITLEBAR_ICON_WIDTH, TITLEBAR_ICON_HEIGHT))));
 }
 /*!
  * \brief Updates the title bar's title when the window \a title changes.

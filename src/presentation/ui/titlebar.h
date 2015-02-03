@@ -37,6 +37,8 @@ private:
     bool showMaximizeButton_;
 
     constexpr static int DELAY_TIMER_INTERVAL = 200;
+    constexpr static int TITLEBAR_ICON_WIDTH  = 24;
+    constexpr static int TITLEBAR_ICON_HEIGHT = 24;
 private slots:
     void onMinimizeButtonClicked();
     void onUnmaximizeButtonClicked();

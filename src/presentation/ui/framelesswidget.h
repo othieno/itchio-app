@@ -15,8 +15,8 @@ protected:
 
     virtual void initializeUi() = 0;
 
+    bool event(QEvent* const event) override;
     void showEvent(QShowEvent* const event) override;
-    void changeEvent(QEvent* const event) override;
 
     QLayout* titlebarLayout();
 
@@ -73,13 +73,13 @@ void FramelessWidget<Widget, WidgetUi>::showEvent(QShowEvent* const event)
     Widget::showEvent(event);
 }
 /*!
- * \brief Handles the change \a event.
- * This reimplementation handles the 'WindowIconChange', 'WindowTitleChange' and 'WindowStateChange' events.
+ * \brief Handles the generic event \a e.
+ * This reimplementation updates the title bar when the window icon, title or states change.
  */
 template<class Widget, class _>
-void FramelessWidget<Widget, _>::changeEvent(QEvent* const event)
+bool FramelessWidget<Widget, _>::event(QEvent* const e)
 {
-    switch (event->type())
+    switch (e->type())
     {
         case QEvent::WindowIconChange:
             titleBar_.onWindowIconChange(Widget::windowIcon());
@@ -93,7 +93,7 @@ void FramelessWidget<Widget, _>::changeEvent(QEvent* const event)
         default:
             break;
     }
-    Widget::changeEvent(event);
+    return Widget::event(e);
 }
 /*!
  * \brief Sets up the frameless widget's title bar.
